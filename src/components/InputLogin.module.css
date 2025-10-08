@@ -1,0 +1,12 @@
+.input {
+    border-radius: 10px;
+    border: solid 1px gray;
+    height: 48px;
+    width: 300px;
+    user-select: none;
+    outline: none;
+    padding: 0 10px;
+}
+.width100{
+    width: 100%;
+}

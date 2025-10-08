@@ -1,0 +1,15 @@
+.contenedorInicio{
+    padding: 20px 0 ;
+}
+.headerInicio{
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    gap: 20px;
+}
+.imgUser{
+    width: 89px;
+    height: 89px;
+    border-radius: 50%;
+    background-color: #C4C4C4;
+}

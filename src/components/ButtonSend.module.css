@@ -1,0 +1,12 @@
+
+.botonEnviar{
+    height: 48px;
+    width: 300px;
+    background-color: #0E64D2;
+    font-size: 14px;
+    color: white;
+    font-weight: semi-bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}

@@ -1,0 +1,16 @@
+
+
+.contenedorRegistro{
+    padding: 25px;
+}
+
+.subtitulo {
+    color: var(--titulo-color);
+    margin-top: 25px;
+}
+.formulario{
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    margin-top: 25px;
+}

@@ -1,0 +1,64 @@
+
+.header {
+    text-align: center;
+    margin: 50px 0;
+    color: var(--titulo-color);
+}
+
+.subtitulo{
+    text-align: center;
+    color: var(--titulo-color);
+}
+
+.formulario{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px;
+    margin-bottom: 20px;
+    gap: 20px;
+}
+
+.register{
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.or{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: black;
+    margin: 20px 0;
+}
+.or::after{
+    content: "";
+    height: 1px;
+    width: 131px;
+    background-color: gray;
+    display: inline-block;
+    margin-left: 10px;
+}
+.or::before{
+    content: "";
+    height: 1px;
+    width: 131px;
+    background-color: gray;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.googleButton{
+    height: 48px;
+    width: 300px;
+    border: solid 1px gray;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
