@@ -1,0 +1,32 @@
+.contenedorEditProfile {
+    padding: 20px;
+    margin-bottom: 60px;
+    background-color: #E9FFED;
+    min-height: 100vh;
+}
+
+.headerEditProfile {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.botonVolver {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #333;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.botonVolver:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}

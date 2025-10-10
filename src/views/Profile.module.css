@@ -1,0 +1,58 @@
+.contenedorProfile {
+    padding: 20px;
+    margin-bottom: 60px;
+    background-color: #E9FFED;
+    min-height: 100vh;
+}
+
+.headerProfile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.botonVolver,
+.botonConfiguracion {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #333;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.botonVolver:hover,
+.botonConfiguracion:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.botonCerrarContainer {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+}
+
+.botonCerrarSesion {
+    background-color: #d32f2f;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    min-width: 150px;
+}
+
+.botonCerrarSesion:hover {
+    background-color: #b71c1c;
+}

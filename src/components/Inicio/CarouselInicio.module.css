@@ -16,6 +16,11 @@
 .contenedorImagen{
     flex: 1;
 }
+.contenedorImagen img{
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
 
 .contenedorImagenesCirculo{
     display: flex;

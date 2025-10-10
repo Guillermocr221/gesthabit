@@ -1,0 +1,65 @@
+.medallaContainer {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.medallaCard {
+    flex: 1;
+    background-color: white;
+    border-radius: 12px;
+    padding: 15px;
+    border-left: 4px solid #4CAF50;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.medallaInfo {
+    flex: 1;
+}
+
+.medallaHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.nombreMedalla {
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--titulo-color);
+    margin: 0;
+}
+
+.descripcionMedalla {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.estadisticaMedalla {
+    margin-top: 5px;
+}
+
+.estadisticaTexto {
+    font-size: 12px;
+    color: #999;
+}
+
+.iconoContainer {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 15px;
+}
+
+.iconoMedalla {
+    font-size: 24px;
+}

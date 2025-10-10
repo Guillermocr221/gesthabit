@@ -1,0 +1,79 @@
+.contenedorStats {
+    padding: 20px;
+    margin-bottom: 60px;
+    background-color: #E9FFED;
+    min-height: 100vh;
+}
+
+.headerStats {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.botonVolver {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #333;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
+}
+
+.botonVolver:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.titulo {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--titulo-color);
+    margin: 0;
+}
+
+.seccionEstres {
+    margin-bottom: 30px;
+}
+
+.subtitulo {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--titulo-color);
+    margin: 0 0 15px 0;
+}
+
+.seccionGraficos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.columnaIzquierda,
+.columnaDerecha {
+    display: flex;
+    flex-direction: column;
+}
+
+.fraseMotivacional {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.fraseMotivacional p {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--titulo-color);
+    margin: 0;
+    font-style: italic;
+}
+
+@media (max-width: 768px) {
+    .seccionGraficos {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+}

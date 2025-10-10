@@ -1,5 +1,6 @@
 .contenedorInicio{
     padding: 20px 0 ;
+    margin-bottom: 50px;
 }
 .headerInicio{
     display: flex;
@@ -12,4 +13,5 @@
     height: 89px;
     border-radius: 50%;
     background-color: #C4C4C4;
+    object-fit: fill;  
 }

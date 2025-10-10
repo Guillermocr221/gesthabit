@@ -1,0 +1,52 @@
+.container {
+    min-height: 100vh;
+    background-image: url('../../assets/image/yoga2.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(102, 126, 234, 0.7);
+    z-index: 1;
+}
+
+.content {
+    text-align: center;
+    color: white;
+    position: relative;
+    z-index: 2;
+}
+
+.logoContainer {
+    margin-bottom: 40px;
+}
+
+.logo {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin: 0 0 10px 0;
+    letter-spacing: 2px;
+}
+
+.logoIcon {
+    font-size: 3rem;
+}
+
+.tagline {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin: 0 0 60px 0;
+    letter-spacing: 1px;
+}

@@ -1,4 +1,5 @@
 import styles from './CarouselInicio.module.css'
+import Runner from '../../assets/image/runner.png'
 
 function cardCarousel() {
   return (
@@ -16,7 +17,7 @@ function cardCarousel() {
             </div>
         </div>
         <div className={styles.contenedorImagen}>
-            <img src="" alt="" />
+            <img src={Runner} alt="" />
         </div>
     </div>
   )

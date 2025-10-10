@@ -1,0 +1,80 @@
+.container {
+    min-height: 100vh;
+    background-image: url('../../assets/image/yoga2.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(102, 126, 234, 0.7);
+    z-index: 1;
+}
+
+.content {
+    text-align: center;
+    color: white;
+    max-width: 500px;
+    position: relative;
+    z-index: 2;
+}
+
+.titulo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0 0 20px 0;
+    letter-spacing: 1px;
+    line-height: 1.3;
+}
+
+.subtitulo {
+    font-size: 1rem;
+    margin: 0 0 40px 0;
+    line-height: 1.5;
+}
+
+.goalsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 60px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.goalButton {
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 15px;
+    padding: 15px 20px;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 400;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+    line-height: 1.4;
+}
+
+.goalButton:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.goalButton.selected {
+    background-color: #FFA500;
+    border-color: #FFA500;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 165, 0, 0.3);
+}

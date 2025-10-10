@@ -1,0 +1,52 @@
+.contenedorAchievements {
+    padding: 20px;
+    margin-bottom: 60px;
+    background-color: #E9FFED;
+    min-height: 100vh;
+}
+
+.headerAchievements {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.botonVolver {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #333;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
+}
+
+.botonVolver:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.titulo {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--titulo-color);
+    margin: 0;
+}
+
+.seccionMedallas {
+    margin-bottom: 20px;
+}
+
+.subtitulo {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--titulo-color);
+    margin: 0;
+}
+
+.listaMedallas {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}

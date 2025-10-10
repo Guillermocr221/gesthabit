@@ -1,0 +1,40 @@
+.dificultadesContainer {
+    background-color: white;
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.titulo {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--titulo-color);
+    margin: 0 0 20px 0;
+}
+
+.listaDificultades {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.itemDificultad {
+    position: relative;
+    padding-left: 25px;
+    font-size: 14px;
+    color: #666;
+    line-height: 1.5;
+}
+
+.itemDificultad::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--login-anchor-color);
+    font-weight: bold;
+    font-size: 16px;
+}

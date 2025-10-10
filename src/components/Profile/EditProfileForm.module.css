@@ -1,0 +1,86 @@
+.formContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.campoForm {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.labelCampo {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--titulo-color);
+}
+
+.inputCampo {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: white;
+    transition: border-color 0.2s ease;
+}
+
+.inputCampo:focus {
+    outline: none;
+    border-color: var(--login-anchor-color);
+}
+
+.inputCampo::placeholder {
+    color: #999;
+}
+
+.passwordContainer {
+    position: relative;
+}
+
+.passwordContainer .inputCampo {
+    padding-right: 45px;
+}
+
+.botonOjo {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 4px;
+}
+
+.botonOjo:hover {
+    color: var(--login-anchor-color);
+}
+
+.correoReadonly {
+    padding: 12px 15px;
+    background-color: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #666;
+}
+
+.botonActualizar {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+.botonActualizar:hover {
+    background-color: #45a049;
+}

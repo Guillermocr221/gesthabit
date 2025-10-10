@@ -6,17 +6,19 @@ import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { CarouselInicio } from '../components/Inicio/CarouselInicio';
 import { NavBarInicio } from '../components/Inicio/NavBarInicio';
 import { CardStatInicio } from '../components/Inicio/CardStatInicio';
+import { ChatBot } from '../components/ChatBot';
 
 import waterIcon from '../assets/icons/water_drop.png';
 import neurologyIcon from '../assets/icons/neurology.png';
 import bedtimeIcon from '../assets/icons/bedtime.png';
 import vitalsignsIcon from '../assets/icons/vital_signs.png';
+import User1 from '../assets/image/default_user1.jpg'
 
 export default function Inicio() {
     return (
         <div className={styles.contenedorInicio}>
             <header className={styles.headerInicio}>
-                <img className={styles.imgUser} src="" alt="" />
+                <img className={styles.imgUser} src={User1} alt="" />
                 <p>Hola,<br/><span className='font-weigth-bold'>Fabrizio Rodriguez!!</span></p>
                 <FontAwesomeIcon icon={faMagnifyingGlass} />
             </header>
@@ -60,6 +62,8 @@ export default function Inicio() {
                 unit="pasos"
             />
 
+            {/* ChatBot flotante */}
+            <ChatBot />
         </div>
     )
 }

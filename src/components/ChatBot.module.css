@@ -1,0 +1,199 @@
+.chatBotContainer {
+  position: fixed;
+  bottom: 80px; /* Para que no interfiera con la barra de navegación */
+  right: 20px;
+  z-index: 1000;
+}
+
+.chatBotButton {
+  width: 80px; /* Aumentar tamaño de 60px a 80px */
+  height: 80px; /* Aumentar tamaño de 60px a 80px */
+  border-radius: 50%;
+  border: none;
+  background: transparent; /* Quitar fondo azul */
+  box-shadow: none; /* Quitar sombra */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0; /* Quitar padding para que la imagen ocupe todo el espacio */
+}
+
+.chatBotButton:hover {
+  transform: scale(1.1);
+  box-shadow: none; /* Mantener sin sombra en hover */
+}
+
+.botImage {
+  width: 80px; /* Ajustar imagen al tamaño completo del botón */
+  height: 80px; /* Ajustar imagen al tamaño completo del botón */
+  border-radius: 0; /* Quitar border-radius para mostrar la imagen completa */
+  object-fit: contain; /* Cambiar a contain para mantener proporciones */
+}
+
+.chatDialog {
+  position: absolute;
+  bottom: 80px;
+  right: -80px; /* Mover hacia la izquierda para que no se salga */
+  width: 320px;
+  height: 400px;
+  background-color: #EAE5E5; /* Fondo gris oscuro */
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  border: 1px solid #5a5a5a;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chatHeader {
+  background-color: #FFF1F1; /* Header gris */
+  color: black;
+  padding: 5px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: solid 1px black;
+}
+
+.chatHeader h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 5px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+
+.closeButton:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.chatContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  gap: 15px;
+}
+
+.botMessage {
+  background-color: #FFF1F1;
+  color: black;
+  padding: 12px 15px;
+  border-radius: 15px 15px 15px 5px;
+  max-width: 85%;
+  align-self: flex-start;
+}
+
+.botMessage p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.chatInputContainer {
+  margin-top: auto;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 3px;
+  border-top: solid 1px black;
+}
+
+.imageButton {
+  background-color: #5a5a5a;
+  color: white;
+  border: none;
+  min-width: 40px;
+  min-height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+  font-size: 16px;
+}
+
+.imageButton:hover {
+  background-color: #707070;
+}
+
+.chatInput {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  outline: none;
+  font-size: 12px;
+  font-family: 'Poppins', sans-serif;
+  background-color: #FFF1F1;
+  color: black;
+  width: 150px;
+}
+
+.chatInput::placeholder {
+  color: #bbb;
+}
+
+.chatInput:focus {
+  border-color: #2F89FC;
+}
+
+.sendButton {
+  background-color: #2F89FC;
+  color: white;
+  border: none;
+  min-width: 40px;
+  min-height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+  font-size: 16px;
+}
+
+.sendButton:hover {
+  background-color: #1e6fd1;
+}
+
+/* Responsive para pantallas más pequeñas */
+@media (max-width: 480px) {
+  .chatDialog {
+    width: 280px;
+    right: -0px; /* Ajustar también para móvil */
+  }
+  
+  .chatBotContainer {
+    right: 10px;
+  }
+}
