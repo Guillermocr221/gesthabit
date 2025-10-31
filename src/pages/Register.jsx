@@ -4,6 +4,11 @@ import { InputLogin } from '../components/InputLogin'
 import { Link } from 'react-router-dom'
 
 export function Register() {
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        navigate('/home')
+    }
+    
     return (
         <div className = {styles.contenedorRegistro}>
             <div>
@@ -13,7 +18,7 @@ export function Register() {
             <h2 className={styles.subtitulo}>Registro</h2>
             <p>Completa tus datos</p>
             
-           <form className={styles.formulario} action="/welcome" method="GET">
+           <form className={styles.formulario} onSubmit={handleSubmit}>
             
             <label className='font-weigth-bold' htmlFor="name">Nombres</label>
             <InputLogin type="text" id="name" name="name" placeholder="Nombre Apellido"/>

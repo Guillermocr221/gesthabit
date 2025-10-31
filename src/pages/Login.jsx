@@ -4,6 +4,13 @@ import { InputLogin } from '../components/InputLogin'
 import { Link } from 'react-router-dom'
 
 export function Login() {
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+       
+        navigate('/home')
+    }
+
   return (
     <div>
         <div className={styles.header}>
@@ -11,7 +18,7 @@ export function Login() {
         </div>
             
         <h2 className={styles.subtitulo}>Inicio de sesión</h2>
-        <form className={styles.formulario} action="/home" method="GET">
+        <form className={styles.formulario}  onSubmit={handleSubmit}>
             <div>
                 <InputLogin type="email" id="username" name="username" placeholder="ejemplos@gmail.com"/>
             </div>
