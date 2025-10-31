@@ -2,8 +2,11 @@ import styles from './Login.module.css'
 import { ButtonSend } from '../components/ButtonSend'
 import { InputLogin } from '../components/InputLogin'
 import { Link } from 'react-router-dom'
+import { useNavigate } from "react-router-dom"
 
 export function Login() {
+
+    const navigate = useNavigate()
 
     const handleSubmit = (e) => {
         e.preventDefault()

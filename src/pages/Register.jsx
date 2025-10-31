@@ -2,13 +2,18 @@ import styles from './Register.module.css'
 import { ButtonSend } from '../components/ButtonSend'
 import { InputLogin } from '../components/InputLogin'
 import { Link } from 'react-router-dom'
+import { useNavigate } from "react-router-dom"
+
 
 export function Register() {
+
+    const navigate = useNavigate()
+
     const handleSubmit = (e) => {
         e.preventDefault()
         navigate('/home')
     }
-    
+
     return (
         <div className = {styles.contenedorRegistro}>
             <div>
