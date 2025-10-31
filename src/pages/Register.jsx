@@ -1,12 +1,14 @@
 import styles from './Register.module.css'
 import { ButtonSend } from '../components/ButtonSend'
 import { InputLogin } from '../components/InputLogin'
+import { Link } from 'react-router-dom'
 
 export function Register() {
     return (
         <div className = {styles.contenedorRegistro}>
             <div>
-                <a href='/'><i>Volver</i></a>
+                {/* <a href='/'><i>Volver</i></a> */}
+                <Link to='/'><i>Volver</i></Link>
             </div>
             <h2 className={styles.subtitulo}>Registro</h2>
             <p>Completa tus datos</p>
@@ -24,7 +26,7 @@ export function Register() {
 
             <ButtonSend label="Crear Cuenta"/>
 
-            <p className='text-center'>¿Ya tienes cuenta? <a className='loginLink' href='/'>Inicia sesión</a></p>
+            <p className='text-center'>¿Ya tienes cuenta? <Link to="/" className='loginLink'></Link></p>
            </form>
             
         </div>

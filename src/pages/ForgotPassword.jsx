@@ -2,12 +2,14 @@
 import styles from './ForgotPassword.module.css'
 import { ButtonSend } from '../components/ButtonSend'
 import { InputLogin } from '../components/InputLogin'
+import { Link } from 'react-router-dom'
 
 export function ForgotPassword() {
     return (
         <div className={styles.contenedorForgotPassword}>
             <div>
-                <a href='/'><i>Volver</i></a>
+                {/* <a href='/'><i>Volver</i></a> */}
+                <Link to='/'><i>Volver</i></Link>
             </div>
             <div className={styles.header}>
                 <h1>GestHabit 🧘‍♂️</h1>
