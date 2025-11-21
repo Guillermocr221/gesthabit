@@ -1,4 +1,4 @@
-import { collection, addDoc, getDocs, doc, setDoc, getDoc, query, where, orderBy, limit } from "firebase/firestore";
+import { collection, addDoc, getDocs, doc, setDoc, getDoc, query, where, orderBy, limit, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from "./firebaseConfig";
 
 // Funciones para hábitos (existentes)
@@ -124,6 +124,105 @@ export async function getActividadesByCategoria(categoria) {
     return { success: true, data: snap.docs.map(doc => ({ id: doc.id, ...doc.data() })) };
   } catch (error) {
     console.error("Error getting actividades:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+// Nuevas funciones para actividades personalizadas
+export async function createActividad(uid, actividad) {
+  console.log('🔧 createActividad llamada con:');
+  console.log('  - uid:', uid);
+  console.log('  - actividad:', actividad);
+  
+  try {
+    const actividadData = {
+      ...actividad,
+      uid,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    
+    console.log('📝 Datos preparados para guardar:', actividadData);
+    console.log('🎯 Intentando guardar en colección: actividades_usuario');
+    
+    const docRef = await addDoc(collection(db, "actividades_usuario"), actividadData);
+    
+    console.log('✅ Documento creado exitosamente con ID:', docRef.id);
+    return { success: true, id: docRef.id };
+  } catch (error) {
+    console.error("❌ Error creating actividad:", error);
+    console.error("❌ Error details:", {
+      code: error.code,
+      message: error.message,
+      stack: error.stack
+    });
+    return { success: false, error: error.message };
+  }
+}
+
+export async function getActividadesUsuario(uid, fecha = null) {
+  try {
+    let q;
+    if (fecha) {
+      // Consulta simple por uid y fecha - sin orderBy para evitar índices compuestos
+      q = query(
+        collection(db, "actividades_usuario"), 
+        where("uid", "==", uid),
+        where("fecha", "==", fecha)
+      );
+    } else {
+      // Solo por uid - sin orderBy
+      q = query(
+        collection(db, "actividades_usuario"), 
+        where("uid", "==", uid)
+      );
+    }
+    
+    const snap = await getDocs(q);
+    const actividades = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    
+    // Ordenar en el cliente si es necesario
+    if (fecha) {
+      actividades.sort((a, b) => {
+        if (a.hora && b.hora) {
+          return a.hora.localeCompare(b.hora);
+        }
+        return new Date(b.createdAt?.seconds * 1000 || 0) - new Date(a.createdAt?.seconds * 1000 || 0);
+      });
+    } else {
+      actividades.sort((a, b) => {
+        const dateA = new Date(a.fecha || 0);
+        const dateB = new Date(b.fecha || 0);
+        return dateB - dateA;
+      });
+    }
+    
+    return { success: true, data: actividades };
+  } catch (error) {
+    console.error("Error getting actividades usuario:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function updateActividadCompletada(actividadId, completada) {
+  try {
+    await updateDoc(doc(db, "actividades_usuario", actividadId), {
+      completada,
+      updatedAt: new Date()
+    });
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating actividad:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function deleteActividad(actividadId) {
+  try {
+    await deleteDoc(doc(db, "actividades_usuario", actividadId));
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting actividad:", error);
     return { success: false, error: error.message };
   }
 }

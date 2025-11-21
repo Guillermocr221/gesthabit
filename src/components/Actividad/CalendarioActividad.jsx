@@ -1,110 +1,150 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './CalendarioActividad.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
-export function CalendarioActividad({ selectedDate, onDateSelect }) {
-    const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
-    const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+export function CalendarioActividad({ fechaSeleccionada, onFechaChange, actividades = [] }) {
+    const [currentMonth, setCurrentMonth] = useState(new Date());
 
-    const meses = [
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'
-    ];
+    useEffect(() => {
+        // Asegurar que el mes actual coincida con la fecha seleccionada
+        const fechaObj = new Date(fechaSeleccionada);
+        if (fechaObj.getMonth() !== currentMonth.getMonth() || 
+            fechaObj.getFullYear() !== currentMonth.getFullYear()) {
+            setCurrentMonth(new Date(fechaObj.getFullYear(), fechaObj.getMonth(), 1));
+        }
+    }, [fechaSeleccionada]);
 
-    const diasSemana = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+    const getDaysInMonth = (date) => {
+        const year = date.getFullYear();
+        const month = date.getMonth();
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const daysInMonth = lastDay.getDate();
+        const startingDayOfWeek = firstDay.getDay();
 
-    // Obtener días del mes
-    const getDaysInMonth = (month, year) => {
-        return new Date(year, month + 1, 0).getDate();
+        const days = [];
+
+        // Días del mes anterior para completar la primera semana
+        for (let i = startingDayOfWeek - 1; i >= 0; i--) {
+            const prevDate = new Date(year, month, -i);
+            days.push({
+                date: prevDate,
+                isCurrentMonth: false,
+                isToday: false,
+                isSelected: false,
+                hasActividades: false
+            });
+        }
+
+        // Días del mes actual
+        for (let day = 1; day <= daysInMonth; day++) {
+            const currentDate = new Date(year, month, day);
+            const dateString = currentDate.toISOString().split('T')[0];
+            const today = new Date().toISOString().split('T')[0];
+            
+            days.push({
+                date: currentDate,
+                isCurrentMonth: true,
+                isToday: dateString === today,
+                isSelected: dateString === fechaSeleccionada,
+                hasActividades: actividades.some(act => act.fecha === dateString)
+            });
+        }
+
+        // Días del próximo mes para completar la última semana
+        const remainingDays = 42 - days.length; // 6 semanas * 7 días
+        for (let day = 1; day <= remainingDays; day++) {
+            const nextDate = new Date(year, month + 1, day);
+            days.push({
+                date: nextDate,
+                isCurrentMonth: false,
+                isToday: false,
+                isSelected: false,
+                hasActividades: false
+            });
+        }
+
+        return days;
     };
-
-    // Obtener el primer día de la semana del mes
-    const getFirstDayOfMonth = (month, year) => {
-        return new Date(year, month, 1).getDay();
-    };
-
-    const daysInMonth = getDaysInMonth(currentMonth, currentYear);
-    const firstDay = getFirstDayOfMonth(currentMonth, currentYear);
-
-    // Crear array de días
-    const days = [];
-    
-    // Días del mes anterior (espacios vacíos)
-    for (let i = 0; i < firstDay; i++) {
-        const prevMonthDays = getDaysInMonth(currentMonth - 1, currentYear);
-        days.push({
-            day: prevMonthDays - firstDay + i + 1,
-            isCurrentMonth: false,
-            isToday: false
-        });
-    }
-
-    // Días del mes actual
-    const today = new Date();
-    for (let day = 1; day <= daysInMonth; day++) {
-        const isToday = day === today.getDate() && 
-                       currentMonth === today.getMonth() && 
-                       currentYear === today.getFullYear();
-        
-        days.push({
-            day,
-            isCurrentMonth: true,
-            isToday
-        });
-    }
-
-    // Días del próximo mes para completar la grilla
-    const totalCells = 42; // 6 semanas × 7 días
-    const remainingCells = totalCells - days.length;
-    for (let day = 1; day <= remainingCells; day++) {
-        days.push({
-            day,
-            isCurrentMonth: false,
-            isToday: false
-        });
-    }
 
     const handleDayClick = (day) => {
-        if (day.isCurrentMonth) {
-            const newDate = new Date(currentYear, currentMonth, day.day);
-            onDateSelect(newDate);
-        }
+        if (!day.isCurrentMonth) return;
+        
+        const dateString = day.date.toISOString().split('T')[0];
+        onFechaChange(dateString);
     };
+
+    const handlePrevMonth = () => {
+        setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
+    };
+
+    const handleNextMonth = () => {
+        setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
+    };
+
+    const formatMonth = (date) => {
+        return date.toLocaleDateString('es-ES', { 
+            month: 'long', 
+            year: 'numeric' 
+        });
+    };
+
+    const days = getDaysInMonth(currentMonth);
+    const weekDays = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 
     return (
         <div className={styles.calendarioContainer}>
             {/* Header del calendario */}
             <div className={styles.calendarioHeader}>
-                <div className={styles.yearMonth}>
-                    <span className={styles.year}>{currentYear}</span>
-                    <div className={styles.monthSelector}>
-                        <span className={styles.month}>{meses[currentMonth]}</span>
-                        <FontAwesomeIcon icon={faChevronDown} className={styles.chevron} />
-                    </div>
-                </div>
+                <button 
+                    className={styles.navButton}
+                    onClick={handlePrevMonth}
+                >
+                    <FontAwesomeIcon icon={faChevronLeft} />
+                </button>
+                
+                <h3 className={styles.monthTitle}>
+                    {formatMonth(currentMonth)}
+                </h3>
+                
+                <button 
+                    className={styles.navButton}
+                    onClick={handleNextMonth}
+                >
+                    <FontAwesomeIcon icon={faChevronRight} />
+                </button>
             </div>
 
             {/* Días de la semana */}
-            <div className={styles.diasSemana}>
-                {diasSemana.map(dia => (
-                    <div key={dia} className={styles.diaSemana}>
-                        {dia}
+            <div className={styles.weekDaysGrid}>
+                {weekDays.map((day) => (
+                    <div key={day} className={styles.weekDay}>
+                        {day}
                     </div>
                 ))}
             </div>
 
-            {/* Grilla de días */}
-            <div className={styles.diasGrid}>
+            {/* Grid de días */}
+            <div className={styles.daysGrid}>
                 {days.map((day, index) => (
                     <div
                         key={index}
-                        className={`${styles.dia} ${
-                            !day.isCurrentMonth ? styles.diaOtroMes : ''
-                        } ${day.isToday ? styles.diaHoy : ''}`}
+                        className={`
+                            ${styles.dayCell} 
+                            ${!day.isCurrentMonth ? styles.otherMonth : ''}
+                            ${day.isToday ? styles.today : ''}
+                            ${day.isSelected ? styles.selected : ''}
+                            ${day.hasActividades ? styles.hasActividades : ''}
+                        `}
                         onClick={() => handleDayClick(day)}
                     >
-                        {day.day}
+                        <span className={styles.dayNumber}>
+                            {day.date.getDate()}
+                        </span>
+                        {day.hasActividades && (
+                            <div className={styles.actividadIndicator}></div>
+                        )}
                     </div>
                 ))}
             </div>
