@@ -6,6 +6,8 @@ import { PerfilDificultades } from '../components/Profile/PerfilDificultades';
 import { PerfilMetas } from '../components/Profile/PerfilMetas';
 import { useNavigate } from 'react-router-dom';
 
+import { logoutUser } from '../firebase/auth';
+
 export default function Profile() {
     const navigate = useNavigate();
 
@@ -17,7 +19,8 @@ export default function Profile() {
         navigate('/edit-profile');
     };
 
-    const handleCerrarSesion = () => {
+    const handleCerrarSesion = async () => {
+        await logoutUser();
         navigate('/');
     };
 

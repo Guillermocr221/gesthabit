@@ -4,10 +4,18 @@ import { InputLogin } from '../components/InputLogin'
 import { Link } from 'react-router-dom'
 import { useNavigate } from "react-router-dom"
 
+import { useState } from 'react'
+import { registerUser } from '../firebase/auth'
+
+
 
 export function Register() {
 
     const navigate = useNavigate()
+
+    const [email, setEmail] = useState("");
+    const [pass, setPass] = useState("");
+    const [name, setName] = useState("");
 
     const handleSubmit = (e) => {
         e.preventDefault()

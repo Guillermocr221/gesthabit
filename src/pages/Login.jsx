@@ -3,16 +3,40 @@ import { ButtonSend } from '../components/ButtonSend'
 import { InputLogin } from '../components/InputLogin'
 import { Link } from 'react-router-dom'
 import { useNavigate } from "react-router-dom"
+import { useState } from 'react'
+
+import { loginUser, loginWithGoogle } from "../firebase/auth";
 
 export function Login() {
 
     const navigate = useNavigate()
 
-    const handleSubmit = (e) => {
+    const [email, setEmail] = useState("");
+    const [pass, setPass] = useState("");
+
+    const handleSubmit = async (e) => {
         e.preventDefault()
-       
-        navigate('/home')
+        try {
+            let response  = await loginUser(email, pass);
+            let user = response.user;
+            alert("Bienvenido " + user.email);
+            navigate('/home')
+          } catch (err) {
+            alert(err.message);
+          }
     }
+
+    const handleClickGoogle = async () => {
+        try {
+            let response =  await loginWithGoogle();
+            let user = response.user;
+            alert("Bienvenido " + user.email);
+            navigate('/home')
+            } catch (err) {
+                alert(err.message);
+            }
+    }
+
 
   return (
     <div>
@@ -23,11 +47,11 @@ export function Login() {
         <h2 className={styles.subtitulo}>Inicio de sesión</h2>
         <form className={styles.formulario}  onSubmit={handleSubmit}>
             <div>
-                <InputLogin type="email" id="username" name="username" placeholder="ejemplos@gmail.com"/>
+                <InputLogin type="email" id="username" name="username" placeholder="ejemplos@gmail.com"  onChange={e => setEmail(e.target.value)}/>
             </div>
 
             <div>
-                <InputLogin type="password" id="password" name="password" placeholder="Ingrese su contraseña"/>
+                <InputLogin type="password" id="password" name="password" placeholder="Ingrese su contraseña" onChange={e => setPass(e.target.value)}/>
             </div>
 
             {/* <a className='loginLink' href="/forgot-password">Olvidaste contraseña</a> */}
@@ -41,7 +65,7 @@ export function Login() {
             {/* <a className='loginLink' href="/register">Regístrate</a> */}
             <Link className='loginLink' to="/register">Regístrate</Link>
             <div className={styles.or}>Or</div> 
-            <button className={styles.googleButton}>Login With Google</button>
+            <button className={styles.googleButton} onClick={handleClickGoogle} >Login With Google</button>
         </div>
     </div>
     )
