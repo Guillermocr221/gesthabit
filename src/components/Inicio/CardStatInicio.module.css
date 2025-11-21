@@ -1,9 +1,9 @@
-
-.card{
-    background-color: #FFFBFB;
+.card {
+    background-color: white;
+    margin: 20px 0;
+    padding: 15px;
     border-radius: 15px;
-    box-shadow: 0 6px 4px rgba(0, 0, 0, 0.51);
-    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     width: 347px;
     height: 182px;
     margin: auto;
@@ -13,16 +13,61 @@
     flex-direction: column;
     justify-content: space-between;
 }
-.header{
+
+.header {
     display: flex;
     width: 100%;
     /* justify-content: space-between; */
     gap: 12px;
 }
-.header .add{
+
+.header .add {
     justify-self: end;
 }
-.icono{
+
+.add {
+    width: 40px;
+    height: 40px;
+    /* background-color: #4CAF50; */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.add:hover {
+    /* background-color: #45a049; */
+    transform: scale(1.05);
+}
+
+.add.loading {
+    cursor: not-allowed;
+    background-color: #81C784;
+}
+
+.plusIcon {
+    /* color: white; */
+    font-size: 16px;
+}
+
+.spinner {
+    color: white;
+    font-size: 16px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.icono {
     height: 50px;
     width: 50px;
     border-radius: 50%;
@@ -32,7 +77,7 @@
     align-items: center;
 }
 
-.progressInfo{
+.progressInfo {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -54,9 +99,8 @@
     border-radius: 6px 0 0 6px;
     transition: width 0.3s ease-in-out;
 }
-  
 
-.progressFooter{
+.progressFooter {
     display: flex;
     justify-content: space-between;
     align-items: center;

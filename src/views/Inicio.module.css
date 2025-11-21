@@ -1,6 +1,8 @@
-.contenedorInicio{
-    padding: 20px 0 ;
-    margin-bottom: 50px;
+.contenedorInicio {
+    padding: 20px;
+    padding-bottom: 80px; /* Espacio para el navbar fijo */
+    background-color: #E9FFED;
+    min-height: 100vh;
 }
 .headerInicio{
     display: flex;
