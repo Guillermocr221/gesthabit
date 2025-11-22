@@ -53,6 +53,45 @@ export async function updateUser(uid, userData) {
   }
 }
 
+// Funciones para manejar fotos de perfil
+export async function updateUserPhoto(uid, photoBase64) {
+  try {
+    await updateDoc(doc(db, "usuarios", uid), {
+      photoURL: photoBase64,
+      updatedAt: new Date()
+    });
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating user photo:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function getUserPhoto(uid) {
+  try {
+    const userDoc = await getDoc(doc(db, "usuarios", uid));
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      return { success: true, photoURL: userData.photoURL || null };
+    } else {
+      return { success: false, error: "User not found" };
+    }
+  } catch (error) {
+    console.error("Error getting user photo:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+// Función helper para convertir archivo a Base64
+export function convertFileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+}
+
 // Nuevas funciones para consejos
 export async function getConsejos(categoria = null) {
   try {

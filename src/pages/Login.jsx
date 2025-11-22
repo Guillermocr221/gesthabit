@@ -19,7 +19,6 @@ export function Login() {
         try {
             let response  = await loginUser(email, pass);
             let user = response.user;
-            alert("Bienvenido " + user.email);
             navigate('/home')
           } catch (err) {
             alert(err.message);
@@ -30,7 +29,6 @@ export function Login() {
         try {
             let response =  await loginWithGoogle();
             let user = response.user;
-            alert("Bienvenido " + user.email);
             navigate('/home')
             } catch (err) {
                 alert(err.message);

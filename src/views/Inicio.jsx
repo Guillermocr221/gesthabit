@@ -14,7 +14,8 @@ import {
     getUser, 
     getProgresoDaily, 
     getActividadesByCategoria,
-    checkAndUpdateLogros // Agregar esta importación
+    checkAndUpdateLogros,
+    getUserPhoto // Agregar esta importación
 } from '../firebase/habits';
 
 import waterIcon from '../assets/icons/water_drop.png';
@@ -28,11 +29,14 @@ export default function Inicio() {
     const [progresoHoy, setProgresoHoy] = useState(null);
     const [categoriaActiva, setCategoriaActiva] = useState('nutricion');
     const [actividades, setActividades] = useState([]);
+    const [userPhoto, setUserPhoto] = useState(User1); // Agregar estado para la foto
+    const [photoLoading, setPhotoLoading] = useState(true); // Estado de carga de la foto
 
     useEffect(() => {
         loadUserData();
         loadProgresoDaily();
         loadActividades('nutricion');
+        loadUserPhoto(); // Cargar foto del usuario
     }, []);
 
     const loadUserData = async () => {
@@ -80,6 +84,28 @@ export default function Inicio() {
             } catch (error) {
                 console.error('Error verificando logros:', error);
             }
+        }
+    };
+
+    const loadUserPhoto = async () => {
+        if (auth.currentUser) {
+            setPhotoLoading(true);
+            try {
+                const result = await getUserPhoto(auth.currentUser.uid);
+                if (result.success && result.photoURL) {
+                    setUserPhoto(result.photoURL);
+                } else {
+                    setUserPhoto(User1);
+                }
+            } catch (error) {
+                console.error('Error loading user photo:', error);
+                setUserPhoto(User1);
+            } finally {
+                setPhotoLoading(false);
+            }
+        } else {
+            setUserPhoto(User1);
+            setPhotoLoading(false);
         }
     };
 
@@ -187,7 +213,11 @@ export default function Inicio() {
     return (
         <div className={styles.contenedorInicio}>
             <header className={styles.headerInicio}>
-                <img className={styles.imgUser} src={User1} alt="" />
+                {photoLoading ? (
+                    <div className={styles.photoSkeleton}></div>
+                ) : (
+                    <img className={styles.imgUser} src={userPhoto} alt="Foto de perfil" />
+                )}
                 <p>Hola,<br/><span className='font-weigth-bold'>{userName}!!</span></p>
                 <FontAwesomeIcon icon={faMagnifyingGlass} />
             </header>
