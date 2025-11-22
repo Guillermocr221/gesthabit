@@ -32,7 +32,7 @@ export function GraficoPorcentajes({ datos }) {
     return (
         <div className={styles.graficoContainer}>
             <div className={styles.graficoHeader}>
-                <span className={styles.tituloGrafico}>Minutos por mes</span>
+                <span className={styles.tituloGrafico}>Actividades esta semana</span>
             </div>
             
             <div className={styles.graficoContent}>
@@ -55,7 +55,7 @@ export function GraficoPorcentajes({ datos }) {
                             );
                         })}
                         
-                        {/* Círculo central para hacer efecto donut (opcional) */}
+                        {/* Círculo central para hacer efecto donut */}
                         <circle 
                             cx="50" 
                             cy="50" 
@@ -67,25 +67,26 @@ export function GraficoPorcentajes({ datos }) {
                         {/* Texto central */}
                         <text 
                             x="50" 
-                            y="50" 
-                            textAnchor="middle" 
-                            dy="0.3em" 
-                            className={styles.textoCentral}
-                            fontSize="8"
-                            fill="#666"
-                        >
-                            Total
-                        </text>
-                        <text 
-                            x="50" 
-                            y="58" 
+                            y="48" 
                             textAnchor="middle" 
                             dy="0.3em" 
                             className={styles.textoCentral}
                             fontSize="6"
                             fill="#666"
                         >
-                            {datos.reduce((sum, item) => sum + item.minutos, 0)} min
+                            Total
+                        </text>
+                        <text 
+                            x="50" 
+                            y="54" 
+                            textAnchor="middle" 
+                            dy="0.3em" 
+                            className={styles.textoCentral}
+                            fontSize="8"
+                            fill="#333"
+                            fontWeight="bold"
+                        >
+                            {datos.reduce((sum, item) => sum + item.actividades, 0)}
                         </text>
                     </svg>
                 </div>
@@ -102,7 +103,7 @@ export function GraficoPorcentajes({ datos }) {
                                 <span className={styles.nombreActividad}>{item.nombre}</span>
                                 <div className={styles.estadisticas}>
                                     <span className={styles.porcentaje}>{item.valor}%</span>
-                                    <span className={styles.minutos}>{item.minutos} min</span>
+                                    <span className={styles.cantidad}>{item.actividades} actividades</span>
                                 </div>
                             </div>
                         </div>

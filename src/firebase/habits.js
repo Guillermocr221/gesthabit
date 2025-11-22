@@ -226,3 +226,116 @@ export async function deleteActividad(actividadId) {
     return { success: false, error: error.message };
   }
 }
+
+// Nuevas funciones para estadísticas
+export async function getProgresoSemanal(uid) {
+  try {
+    const hoy = new Date();
+    const hace7Dias = new Date(hoy.getTime() - 7 * 24 * 60 * 60 * 1000);
+    
+    const progresoDatos = [];
+    
+    // Obtener datos de los últimos 7 días
+    for (let i = 0; i < 7; i++) {
+      const fecha = new Date(hace7Dias.getTime() + i * 24 * 60 * 60 * 1000);
+      const fechaStr = fecha.toISOString().split('T')[0];
+      
+      const result = await getProgresoDaily(uid, fechaStr);
+      progresoDatos.push({
+        fecha: fechaStr,
+        dia: fecha.toLocaleDateString('es-ES', { weekday: 'long' }),
+        progreso: result.success ? result.data : null
+      });
+    }
+    
+    return { success: true, data: progresoDatos };
+  } catch (error) {
+    console.error("Error getting progreso semanal:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function getActividadesPorCategoriaSemana(uid) {
+  try {
+    const hoy = new Date();
+    const hace7Dias = new Date(hoy.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const hace7DiasStr = hace7Dias.toISOString().split('T')[0];
+    const hoyStr = hoy.toISOString().split('T')[0];
+    
+    const q = query(
+      collection(db, "actividades_usuario"),
+      where("uid", "==", uid),
+      where("fecha", ">=", hace7DiasStr),
+      where("fecha", "<=", hoyStr),
+      where("completada", "==", true)
+    );
+    
+    const snap = await getDocs(q);
+    const actividades = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    
+    // Agrupar por categoría
+    const categoriasCount = {};
+    actividades.forEach(actividad => {
+      const categoria = actividad.categoria || 'personal';
+      categoriasCount[categoria] = (categoriasCount[categoria] || 0) + 1;
+    });
+    
+    return { success: true, data: categoriasCount };
+  } catch (error) {
+    console.error("Error getting actividades por categoria:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function getMetasDiariasCumplidas(uid) {
+  try {
+    const hoy = new Date();
+    const hace30Dias = new Date(hoy.getTime() - 30 * 24 * 60 * 60 * 1000);
+    
+    const metasDatos = [];
+    
+    // Obtener datos de los últimos 30 días
+    for (let i = 0; i < 30; i++) {
+      const fecha = new Date(hace30Dias.getTime() + i * 24 * 60 * 60 * 1000);
+      const fechaStr = fecha.toISOString().split('T')[0];
+      
+      const result = await getProgresoDaily(uid, fechaStr);
+      if (result.success && result.data) {
+        const progreso = result.data;
+        let metasCumplidas = 0;
+        let totalMetas = 0;
+        
+        // Verificar metas principales
+        const metas = ['hidratacion', 'cardio', 'meditacion', 'descanso'];
+        metas.forEach(meta => {
+          if (progreso[meta]) {
+            totalMetas++;
+            if (progreso[meta].current >= progreso[meta].total) {
+              metasCumplidas++;
+            }
+          }
+        });
+        
+        const porcentaje = totalMetas > 0 ? (metasCumplidas / totalMetas) * 100 : 0;
+        metasDatos.push({
+          fecha: fechaStr,
+          porcentaje: Math.round(porcentaje),
+          metasCumplidas,
+          totalMetas
+        });
+      } else {
+        metasDatos.push({
+          fecha: fechaStr,
+          porcentaje: 0,
+          metasCumplidas: 0,
+          totalMetas: 0
+        });
+      }
+    }
+    
+    return { success: true, data: metasDatos };
+  } catch (error) {
+    console.error("Error getting metas diarias:", error);
+    return { success: false, error: error.message };
+  }
+}
