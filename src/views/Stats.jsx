@@ -189,9 +189,7 @@ export default function Stats() {
         return (
             <div className={styles.contenedorStats}>
                 <div className={styles.headerStats}>
-                    <button className={styles.botonVolver} onClick={handleVolver}>
-                        <FontAwesomeIcon icon={faArrowLeft} />
-                    </button>
+                    
                     <h2 className={styles.titulo}>Mis estadísticas</h2>
                 </div>
                 <div className={styles.loading}>Cargando estadísticas...</div>
@@ -203,9 +201,7 @@ export default function Stats() {
         <div className={styles.contenedorStats}>
             {/* Header con botón de volver */}
             <div className={styles.headerStats}>
-                <button className={styles.botonVolver} onClick={handleVolver}>
-                    <FontAwesomeIcon icon={faArrowLeft} />
-                </button>
+                
                 <h2 className={styles.titulo}>Mis estadísticas</h2>
             </div>
 

@@ -10,11 +10,16 @@ import { ModalAgregarActividad } from '../components/Actividad/ModalAgregarActiv
 import { auth } from '../firebase/firebaseConfig';
 import { getActividadesUsuario, createActividad, updateActividadCompletada, checkAndUpdateLogros } from '../firebase/habits';
 
+// import usenavigate
+import { useNavigate } from 'react-router-dom';
+
 export default function Activity() {
     const [fechaSeleccionada, setFechaSeleccionada] = useState(new Date().toISOString().split('T')[0]);
     const [actividades, setActividades] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         loadActividades();
@@ -57,7 +62,7 @@ export default function Activity() {
                         if (logrosResult.success && logrosResult.logrosDesbloqueados.length > 0) {
                             // Mostrar notificación de nuevos logros
                             logrosResult.logrosDesbloqueados.forEach(logro => {
-                                console.log(`🏆 ¡Nuevo logro desbloqueado: ${logro.nombre}!`);
+                                console.log(`¡Nuevo logro desbloqueado: ${logro.nombre}!`);
                                 // Aquí podrías mostrar una notificación toast
                             });
                         }
@@ -75,10 +80,6 @@ export default function Activity() {
     };
 
     const handleAgregarActividad = async (nuevaActividad) => {
-        console.log('=== INICIANDO CREACIÓN DE ACTIVIDAD ===');
-        console.log('Usuario actual:', auth.currentUser?.uid);
-        console.log('Fecha seleccionada:', fechaSeleccionada);
-        console.log('Datos de actividad:', nuevaActividad);
         
         if (auth.currentUser) {
             const actividadData = {
@@ -86,8 +87,6 @@ export default function Activity() {
                 fecha: fechaSeleccionada,
                 completada: false
             };
-
-            console.log('Datos completos a guardar:', actividadData);
 
             try {
                 const result = await createActividad(auth.currentUser.uid, actividadData);
@@ -103,28 +102,28 @@ export default function Activity() {
                         const logrosResult = await checkAndUpdateLogros(auth.currentUser.uid);
                         if (logrosResult.success && logrosResult.logrosDesbloqueados.length > 0) {
                             logrosResult.logrosDesbloqueados.forEach(logro => {
-                                console.log(`🏆 ¡Nuevo logro desbloqueado: ${logro.nombre}!`);
+                                console.log(`¡Nuevo logro desbloqueado: ${logro.nombre}!`);
                             });
                         }
                     } catch (error) {
                         console.error('Error verificando logros:', error);
                     }
                 } else {
-                    console.error('❌ Error en createActividad:', result.error);
+                    console.error('Error en createActividad:', result.error);
                     alert('Error al crear la actividad: ' + result.error);
                 }
             } catch (error) {
-                console.error('❌ Error inesperado creando actividad:', error);
+                console.error('Error inesperado creando actividad:', error);
                 alert('Error inesperado al crear la actividad. Revisa la consola.');
             }
         } else {
-            console.error('❌ No hay usuario autenticado');
+            console.error('No hay usuario autenticado');
             alert('No hay usuario autenticado');
         }
     };
 
     const handleVolver = () => {
-        console.log("Volver al inicio");
+        
     };
 
     const today = new Date().toISOString().split('T')[0];
@@ -135,9 +134,7 @@ export default function Activity() {
         <div className={styles.contenedorActivity}>
             {/* Header */}
             <div className={styles.headerActivity}>
-                <button className={styles.botonVolver} onClick={handleVolver}>
-                    <FontAwesomeIcon icon={faArrowLeft} />
-                </button>
+                
                 <h2 className={styles.titulo}>Mis actividades</h2>
                 <button 
                     className={styles.botonAgregar} 

@@ -113,9 +113,6 @@ export default function Achievements() {
         return (
             <div className={styles.contenedorAchievements}>
                 <div className={styles.headerAchievements}>
-                    <button className={styles.botonVolver} onClick={handleVolver}>
-                        <FontAwesomeIcon icon={faArrowLeft} />
-                    </button>
                     <h2 className={styles.titulo}>Mis logros</h2>
                 </div>
                 <div className={styles.loading}>Cargando logros...</div>
@@ -127,9 +124,6 @@ export default function Achievements() {
         <div className={styles.contenedorAchievements}>
             {/* Header con botón de volver */}
             <div className={styles.headerAchievements}>
-                <button className={styles.botonVolver} onClick={handleVolver}>
-                    <FontAwesomeIcon icon={faArrowLeft} />
-                </button>
                 <h2 className={styles.titulo}>Mis logros</h2>
             </div>
 

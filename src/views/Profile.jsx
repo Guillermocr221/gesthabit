@@ -52,9 +52,6 @@ export default function Profile() {
         }
     };
 
-    const handleVolver = () => {
-        console.log("Volver al inicio");
-    };
 
     const handleConfiguracion = () => {
         navigate('/edit-profile');
@@ -73,9 +70,6 @@ export default function Profile() {
         return (
             <div className={styles.contenedorProfile}>
                 <div className={styles.headerProfile}>
-                    <button className={styles.botonVolver} onClick={handleVolver}>
-                        <FontAwesomeIcon icon={faArrowLeft} />
-                    </button>
                     <button className={styles.botonConfiguracion} onClick={handleConfiguracion}>
                         <FontAwesomeIcon icon={faCog} />
                     </button>
@@ -89,9 +83,6 @@ export default function Profile() {
         return (
             <div className={styles.contenedorProfile}>
                 <div className={styles.headerProfile}>
-                    <button className={styles.botonVolver} onClick={handleVolver}>
-                        <FontAwesomeIcon icon={faArrowLeft} />
-                    </button>
                     <button className={styles.botonConfiguracion} onClick={handleConfiguracion}>
                         <FontAwesomeIcon icon={faCog} />
                     </button>
@@ -125,9 +116,6 @@ export default function Profile() {
         <div className={styles.contenedorProfile}>
             {/* Header con botones */}
             <div className={styles.headerProfile}>
-                <button className={styles.botonVolver} onClick={handleVolver}>
-                    <FontAwesomeIcon icon={faArrowLeft} />
-                </button>
                 <button className={styles.botonConfiguracion} onClick={handleConfiguracion}>
                     <FontAwesomeIcon icon={faCog} />
                 </button>

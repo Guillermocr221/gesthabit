@@ -4,6 +4,11 @@ import { InputLogin } from '../components/InputLogin'
 import { Link } from 'react-router-dom'
 import { useNavigate } from "react-router-dom"
 import { useState } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+import googleLogo from '../assets/google.png'
+import Logo1 from '../assets/image/logo1.png'
+
 
 import { loginUser, loginWithGoogle } from "../firebase/auth";
 
@@ -39,7 +44,8 @@ export function Login() {
   return (
     <div>
         <div className={styles.header}>
-            <h1>GestHabit 🧘‍♂️</h1>
+            <h1>GestHabit </h1>
+            <img src={Logo1} className={styles.logo} />
         </div>
             
         <h2 className={styles.subtitulo}>Inicio de sesión</h2>
@@ -63,7 +69,7 @@ export function Login() {
             {/* <a className='loginLink' href="/register">Regístrate</a> */}
             <Link className='loginLink' to="/register">Regístrate</Link>
             <div className={styles.or}>Or</div> 
-            <button className={styles.googleButton} onClick={handleClickGoogle} >Login With Google</button>
+            <button className={styles.googleButton} onClick={handleClickGoogle} ><img src={googleLogo} className={styles.googleLogo} />Continue with Google</button>
         </div>
     </div>
     )
