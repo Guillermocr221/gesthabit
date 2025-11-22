@@ -10,7 +10,12 @@ import { CardStatInicio } from '../components/Inicio/CardStatInicio';
 import { ChatBot } from '../components/ChatBot';
 
 import { auth } from '../firebase/firebaseConfig';
-import { getUser, getProgresoDaily, getActividadesByCategoria } from '../firebase/habits';
+import { 
+    getUser, 
+    getProgresoDaily, 
+    getActividadesByCategoria,
+    checkAndUpdateLogros // Agregar esta importación
+} from '../firebase/habits';
 
 import waterIcon from '../assets/icons/water_drop.png';
 import neurologyIcon from '../assets/icons/neurology.png';
@@ -60,6 +65,20 @@ export default function Inicio() {
                     // Metas
                     actividad_fisica: { current: 0, total: 10000 }
                 });
+            }
+            
+            // Verificar logros después de cargar el progreso
+            try {
+                const logrosResult = await checkAndUpdateLogros(auth.currentUser.uid);
+                if (logrosResult.success && logrosResult.logrosDesbloqueados.length > 0) {
+                    // Mostrar notificación de nuevos logros (opcional)
+                    logrosResult.logrosDesbloqueados.forEach(logro => {
+                        console.log(`🏆 ¡Nuevo logro desbloqueado: ${logro.nombre}!`);
+                        // Aquí podrías mostrar una notificación toast si quisieras
+                    });
+                }
+            } catch (error) {
+                console.error('Error verificando logros:', error);
             }
         }
     };

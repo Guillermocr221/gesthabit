@@ -50,3 +50,206 @@
     flex-direction: column;
     gap: 15px;
 }
+
+.loading {
+    text-align: center;
+    padding: 40px 20px;
+    font-size: 16px;
+    color: var(--titulo-color);
+}
+
+.estadisticasContainer {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+    padding: 0 5px;
+}
+
+.estadistica {
+    flex: 1;
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.estadisticaIcono {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background-color: #4CAF50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+}
+
+.estadisticaInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.estadisticaNumero {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--titulo-color);
+    line-height: 1;
+}
+
+.estadisticaLabel {
+    font-size: 12px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.accionesContainer {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.botonVerTodos {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+
+.botonVerTodos:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
+.sinMedallas {
+    text-align: center;
+    padding: 40px 20px;
+    background-color: white;
+    border-radius: 15px;
+    margin: 20px 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sinMedallasIcono {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.7;
+}
+
+.sinMedallas h4 {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--titulo-color);
+    margin: 0 0 12px 0;
+}
+
+.sinMedallas p {
+    font-size: 14px;
+    color: #666;
+    margin: 0 0 24px 0;
+    line-height: 1.5;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.botonEmpezar {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.botonEmpezar:hover {
+    background-color: #45a049;
+}
+
+.notificacionLogros {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    max-width: 300px;
+}
+
+.notificacionLogros h4 {
+    margin: 0 0 12px 0;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.logroReciente {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    padding: 8px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+}
+
+.logroReciente:last-child {
+    margin-bottom: 0;
+}
+
+.logroIcono {
+    font-size: 20px;
+}
+
+@media (max-width: 768px) {
+    .estadisticasContainer {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .estadistica {
+        padding: 16px;
+    }
+    
+    .estadisticaIcono {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+    
+    .estadisticaNumero {
+        font-size: 20px;
+    }
+    
+    .botonVerTodos {
+        padding: 10px 20px;
+        font-size: 13px;
+    }
+    
+    .notificacionLogros {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+}

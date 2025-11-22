@@ -339,3 +339,289 @@ export async function getMetasDiariasCumplidas(uid) {
     return { success: false, error: error.message };
   }
 }
+
+// Funciones para el sistema de logros
+export async function initializeLogros() {
+  try {
+    // Verificar si ya existen logros en la base de datos
+    const logrosQuery = query(collection(db, "logros"));
+    const logrosSnap = await getDocs(logrosQuery);
+    
+    if (logrosSnap.empty) {
+      // Crear logros predeterminados
+      const logrosPredeterminados = [
+        {
+          id: "rookie_bienestar",
+          nombre: "Rookie del bienestar",
+          descripcion: "Completa tu primera semana de rutina.",
+          condicion: "semana_completa",
+          valorRequerido: 1,
+          categoria: "constancia",
+          icono: "🌱",
+          borderColor: "#4ECDC4",
+          rareza: "comun",
+          puntos: 100
+        },
+        {
+          id: "constancia_mensual",
+          nombre: "Constancia mensual",
+          descripcion: "Mantén tu rutina durante un mes completo.",
+          condicion: "meses_consecutivos",
+          valorRequerido: 1,
+          categoria: "constancia",
+          icono: "🌿",
+          borderColor: "#45B7D1",
+          rareza: "raro",
+          puntos: 500
+        },
+        {
+          id: "maestro_equilibrio",
+          nombre: "Maestro del equilibrio",
+          descripcion: "Combina 3 actividades diferentes en una semana.",
+          condicion: "actividades_variadas_semana",
+          valorRequerido: 3,
+          categoria: "variedad",
+          icono: "⚖️",
+          borderColor: "#FECA57",
+          rareza: "comun",
+          puntos: 200
+        },
+        {
+          id: "hidratacion_perfecta",
+          nombre: "Hidratación perfecta",
+          descripcion: "Cumple tu meta de hidratación 7 días consecutivos.",
+          condicion: "hidratacion_consecutiva",
+          valorRequerido: 7,
+          categoria: "salud",
+          icono: "💧",
+          borderColor: "#4ECDC4",
+          rareza: "comun",
+          puntos: 150
+        },
+        {
+          id: "cardio_warrior",
+          nombre: "Cardio Warrior",
+          descripcion: "Completa 30 sesiones de cardio.",
+          condicion: "cardio_total",
+          valorRequerido: 30,
+          categoria: "ejercicio",
+          icono: "🏃‍♂️",
+          borderColor: "#FF6B6B",
+          rareza: "raro",
+          puntos: 400
+        },
+        {
+          id: "zen_master",
+          nombre: "Maestro Zen",
+          descripcion: "Medita 14 días consecutivos.",
+          condicion: "meditacion_consecutiva",
+          valorRequerido: 14,
+          categoria: "relajacion",
+          icono: "🧘",
+          borderColor: "#9b59b6",
+          rareza: "epico",
+          puntos: 600
+        },
+        {
+          id: "maraton_bienestar",
+          nombre: "Maratón del bienestar",
+          descripcion: "Completa 4 semanas consecutivas sin fallar.",
+          condicion: "semanas_perfectas",
+          valorRequerido: 4,
+          categoria: "constancia",
+          icono: "🏆",
+          borderColor: "#FFD700",
+          rareza: "legendario",
+          puntos: 1000
+        },
+        {
+          id: "organizador_maestro",
+          nombre: "Organizador maestro",
+          descripcion: "Programa 50 actividades personalizadas.",
+          condicion: "actividades_programadas",
+          valorRequerido: 50,
+          categoria: "organización",
+          icono: "📅",
+          borderColor: "#96CEB4",
+          rareza: "raro",
+          puntos: 350
+        },
+        {
+          id: "descanso_perfecto",
+          nombre: "Descanso perfecto",
+          descripcion: "Cumple tu meta de sueño 10 días consecutivos.",
+          condicion: "descanso_consecutivo",
+          valorRequerido: 10,
+          categoria: "salud",
+          icono: "😴",
+          borderColor: "#C1E1C1",
+          rareza: "comun",
+          puntos: 250
+        },
+        {
+          id: "explorador_habitos",
+          nombre: "Explorador de hábitos",
+          descripcion: "Prueba todas las categorías de actividades.",
+          condicion: "categorias_completas",
+          valorRequerido: 6,
+          categoria: "variedad",
+          icono: "🌟",
+          borderColor: "#FECA57",
+          rareza: "epico",
+          puntos: 750
+        }
+      ];
+
+      // Guardar cada logro en Firestore
+      for (const logro of logrosPredeterminados) {
+        await setDoc(doc(db, "logros", logro.id), {
+          ...logro,
+          createdAt: new Date()
+        });
+      }
+
+      console.log("Logros inicializados correctamente");
+      return { success: true, message: "Logros inicializados" };
+    }
+
+    return { success: true, message: "Logros ya existen" };
+  } catch (error) {
+    console.error("Error inicializando logros:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function getLogros() {
+  try {
+    const logrosSnap = await getDocs(collection(db, "logros"));
+    const logros = logrosSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    return { success: true, data: logros };
+  } catch (error) {
+    console.error("Error getting logros:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function getUserLogros(uid) {
+  try {
+    const userLogrosDoc = await getDoc(doc(db, "user_logros", uid));
+    if (userLogrosDoc.exists()) {
+      return { success: true, data: userLogrosDoc.data() };
+    } else {
+      // Inicializar logros del usuario
+      await setDoc(doc(db, "user_logros", uid), {
+        logrosObtenidos: [],
+        progreso: {},
+        puntosTotal: 0,
+        createdAt: new Date()
+      });
+      return { success: true, data: { logrosObtenidos: [], progreso: {}, puntosTotal: 0 } };
+    }
+  } catch (error) {
+    console.error("Error getting user logros:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function updateUserLogro(uid, logroId, progreso = null) {
+  try {
+    const userLogrosRef = doc(db, "user_logros", uid);
+    const userLogrosDoc = await getDoc(userLogrosRef);
+    
+    let userData = { logrosObtenidos: [], progreso: {}, puntosTotal: 0 };
+    
+    if (userLogrosDoc.exists()) {
+      userData = userLogrosDoc.data();
+    }
+
+    // Actualizar progreso si se proporciona
+    if (progreso !== null) {
+      userData.progreso[logroId] = progreso;
+    }
+
+    // Verificar si el logro debe desbloquearse
+    const logroDoc = await getDoc(doc(db, "logros", logroId));
+    if (logroDoc.exists()) {
+      const logro = logroDoc.data();
+      const progresoActual = userData.progreso[logroId] || 0;
+      
+      if (progresoActual >= logro.valorRequerido && !userData.logrosObtenidos.includes(logroId)) {
+        userData.logrosObtenidos.push(logroId);
+        userData.puntosTotal += logro.puntos;
+        
+        // Actualizar en Firestore
+        await updateDoc(userLogrosRef, userData);
+        
+        return { 
+          success: true, 
+          logrosDesbloqueado: true, 
+          logro: { id: logroId, ...logro },
+          data: userData 
+        };
+      }
+    }
+
+    // Actualizar en Firestore
+    await updateDoc(userLogrosRef, userData);
+    
+    return { success: true, logrosDesbloqueado: false, data: userData };
+  } catch (error) {
+    console.error("Error updating user logro:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function checkAndUpdateLogros(uid) {
+  try {
+    // Obtener datos del usuario para verificar logros
+    const progresoResult = await getProgresoSemanal(uid);
+    const actividadesResult = await getActividadesUsuario(uid);
+    
+    if (!progresoResult.success || !actividadesResult.success) {
+      return { success: false, error: "No se pudieron obtener datos del usuario" };
+    }
+
+    const progreso = progresoResult.data;
+    const actividades = actividadesResult.data;
+    
+    const logrosDesbloqueados = [];
+
+    // Verificar hidratación consecutiva
+    let hidratacionConsecutiva = 0;
+    for (let i = progreso.length - 1; i >= 0; i--) {
+      const diaProgreso = progreso[i].progreso;
+      if (diaProgreso && diaProgreso.hidratacion && 
+          diaProgreso.hidratacion.current >= diaProgreso.hidratacion.total) {
+        hidratacionConsecutiva++;
+      } else {
+        break;
+      }
+    }
+    
+    const hidratacionResult = await updateUserLogro(uid, "hidratacion_perfecta", hidratacionConsecutiva);
+    if (hidratacionResult.logrosDesbloqueado) {
+      logrosDesbloqueados.push(hidratacionResult.logro);
+    }
+
+    // Verificar actividades programadas
+    const actividadesProgramadas = actividades.length;
+    const programadasResult = await updateUserLogro(uid, "organizador_maestro", actividadesProgramadas);
+    if (programadasResult.logrosDesbloqueado) {
+      logrosDesbloqueados.push(programadasResult.logro);
+    }
+
+    // Verificar cardio total
+    const actividadesCardio = actividades.filter(act => 
+      act.categoria === 'ejercicio' && act.completada
+    ).length;
+    const cardioResult = await updateUserLogro(uid, "cardio_warrior", actividadesCardio);
+    if (cardioResult.logrosDesbloqueado) {
+      logrosDesbloqueados.push(cardioResult.logro);
+    }
+
+    return { success: true, logrosDesbloqueados };
+  } catch (error) {
+    console.error("Error checking logros:", error);
+    return { success: false, error: error.message };
+  }
+}

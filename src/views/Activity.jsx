@@ -8,7 +8,7 @@ import { CalendarioActividad } from '../components/Actividad/CalendarioActividad
 import { ModalAgregarActividad } from '../components/Actividad/ModalAgregarActividad';
 
 import { auth } from '../firebase/firebaseConfig';
-import { getActividadesUsuario, createActividad, updateActividadCompletada } from '../firebase/habits';
+import { getActividadesUsuario, createActividad, updateActividadCompletada, checkAndUpdateLogros } from '../firebase/habits';
 
 export default function Activity() {
     const [fechaSeleccionada, setFechaSeleccionada] = useState(new Date().toISOString().split('T')[0]);
@@ -49,6 +49,22 @@ export default function Activity() {
             const result = await updateActividadCompletada(actividadId, completada);
             if (result.success) {
                 await loadActividades(); // Recargar actividades
+                
+                // Verificar logros después de completar una actividad
+                if (completada && auth.currentUser) {
+                    try {
+                        const logrosResult = await checkAndUpdateLogros(auth.currentUser.uid);
+                        if (logrosResult.success && logrosResult.logrosDesbloqueados.length > 0) {
+                            // Mostrar notificación de nuevos logros
+                            logrosResult.logrosDesbloqueados.forEach(logro => {
+                                console.log(`🏆 ¡Nuevo logro desbloqueado: ${logro.nombre}!`);
+                                // Aquí podrías mostrar una notificación toast
+                            });
+                        }
+                    } catch (error) {
+                        console.error('Error verificando logros:', error);
+                    }
+                }
             } else {
                 alert('Error al actualizar la actividad. Intenta de nuevo.');
             }
@@ -81,6 +97,18 @@ export default function Activity() {
                     console.log('✅ Actividad creada exitosamente con ID:', result.id);
                     setShowModal(false);
                     await loadActividades(); // Recargar actividades
+                    
+                    // Verificar logros después de crear una actividad
+                    try {
+                        const logrosResult = await checkAndUpdateLogros(auth.currentUser.uid);
+                        if (logrosResult.success && logrosResult.logrosDesbloqueados.length > 0) {
+                            logrosResult.logrosDesbloqueados.forEach(logro => {
+                                console.log(`🏆 ¡Nuevo logro desbloqueado: ${logro.nombre}!`);
+                            });
+                        }
+                    } catch (error) {
+                        console.error('Error verificando logros:', error);
+                    }
                 } else {
                     console.error('❌ Error en createActividad:', result.error);
                     alert('Error al crear la actividad: ' + result.error);
