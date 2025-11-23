@@ -41,6 +41,7 @@ export default function Stats() {
             // Cargar progreso semanal para el gráfico de barras
             const progresoResult = await getProgresoSemanal(auth.currentUser.uid);
             if (progresoResult.success) {
+                console.log('📊 Datos de progreso semanal recibidos:', progresoResult.data);
                 const actividadesData = progresoResult.data.map(dia => {
                     const progreso = dia.progreso || {};
                     return {
@@ -75,6 +76,7 @@ export default function Stats() {
             // Cargar actividades por categoría para el gráfico de porcentajes
             const categoriasResult = await getActividadesPorCategoriaSemana(auth.currentUser.uid);
             if (categoriasResult.success) {
+                console.log('📈 Datos de categorías recibidos:', categoriasResult.data);
                 const categorias = categoriasResult.data;
                 const total = Object.values(categorias).reduce((sum, count) => sum + count, 0);
                 
@@ -85,31 +87,31 @@ export default function Stats() {
                         personal: '#FF6B6B',
                         salud: '#4ECDC4',
                         estudio: '#9b59b6',
-                        social: '#96CEB4'
+                        social: '#96CEB4',
+                        hogar: '#e67e22',
+                        entretenimiento: '#f39c12'
                     };
 
-                    const porcentajesData = Object.entries(categorias).map(([categoria, count]) => ({
-                        nombre: categoria.charAt(0).toUpperCase() + categoria.slice(1),
-                        valor: Math.round((count / total) * 100),
-                        color: colores[categoria] || '#747d8c',
-                        actividades: count
-                    }));
+                    const porcentajesData = Object.entries(categorias)
+                        .map(([categoria, count]) => ({
+                            nombre: categoria.charAt(0).toUpperCase() + categoria.slice(1),
+                            valor: Math.round((count / total) * 100),
+                            color: colores[categoria] || '#747d8c',
+                            actividades: count
+                        }))
+                        .sort((a, b) => b.valor - a.valor); // Ordenar por porcentaje descendente
 
                     setDatosPorcentajesSemana(porcentajesData);
                 } else {
-                    // Datos por defecto si no hay actividades
-                    setDatosPorcentajesSemana([
-                        { nombre: 'Personal', valor: 40, color: '#FF6B6B', actividades: 2 },
-                        { nombre: 'Ejercicio', valor: 35, color: '#45B7D1', actividades: 2 },
-                        { nombre: 'Salud', valor: 25, color: '#4ECDC4', actividades: 1 }
-                    ]);
+                    // Datos vacíos si no hay actividades completadas
+                    setDatosPorcentajesSemana([]);
                 }
             }
 
         } catch (error) {
             console.error('Error loading estadísticas:', error);
             // Cargar datos por defecto en caso de error
-            loadDefaultData();
+            // loadDefaultData();
         } finally {
             setLoading(false);
         }
