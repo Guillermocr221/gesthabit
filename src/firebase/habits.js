@@ -182,9 +182,9 @@ export async function createActividad(uid, actividad) {
     };
     
     console.log('📝 Datos preparados para guardar:', actividadData);
-    console.log('🎯 Intentando guardar en colección: actividades_usuario');
+    console.log('🎯 Intentando guardar en colección: actividades_usuarios');
     
-    const docRef = await addDoc(collection(db, "actividades_usuario"), actividadData);
+    const docRef = await addDoc(collection(db, "actividades_usuarios"), actividadData);
     
     console.log('✅ Documento creado exitosamente con ID:', docRef.id);
     return { success: true, id: docRef.id };
@@ -205,14 +205,14 @@ export async function getActividadesUsuario(uid, fecha = null) {
     if (fecha) {
       // Consulta simple por uid y fecha - sin orderBy para evitar índices compuestos
       q = query(
-        collection(db, "actividades_usuario"), 
+        collection(db, "actividades_usuarios"), 
         where("uid", "==", uid),
         where("fecha", "==", fecha)
       );
     } else {
       // Solo por uid - sin orderBy
       q = query(
-        collection(db, "actividades_usuario"), 
+        collection(db, "actividades_usuarios"), 
         where("uid", "==", uid)
       );
     }
@@ -245,7 +245,7 @@ export async function getActividadesUsuario(uid, fecha = null) {
 
 export async function updateActividadCompletada(actividadId, completada) {
   try {
-    await updateDoc(doc(db, "actividades_usuario", actividadId), {
+    await updateDoc(doc(db, "actividades_usuarios", actividadId), {
       completada,
       updatedAt: new Date()
     });
@@ -258,7 +258,7 @@ export async function updateActividadCompletada(actividadId, completada) {
 
 export async function deleteActividad(actividadId) {
   try {
-    await deleteDoc(doc(db, "actividades_usuario", actividadId));
+    await deleteDoc(doc(db, "actividades_usuarios", actividadId));
     return { success: true };
   } catch (error) {
     console.error("Error deleting actividad:", error);
@@ -270,13 +270,16 @@ export async function deleteActividad(actividadId) {
 export async function getProgresoSemanal(uid) {
   try {
     const hoy = new Date();
-    const hace7Dias = new Date(hoy.getTime() - 7 * 24 * 60 * 60 * 1000);
+    // Obtener el lunes de esta semana
+    const diaSemana = hoy.getDay();
+    const diasHastaLunes = diaSemana === 0 ? 6 : diaSemana - 1; // Si es domingo (0), retroceder 6 días
+    const lunesEstaSemanaa = new Date(hoy.getTime() - diasHastaLunes * 24 * 60 * 60 * 1000);
     
     const progresoDatos = [];
     
-    // Obtener datos de los últimos 7 días
+    // Obtener datos de los últimos 7 días empezando desde el lunes
     for (let i = 0; i < 7; i++) {
-      const fecha = new Date(hace7Dias.getTime() + i * 24 * 60 * 60 * 1000);
+      const fecha = new Date(lunesEstaSemanaa.getTime() + i * 24 * 60 * 60 * 1000);
       const fechaStr = fecha.toISOString().split('T')[0];
       
       const result = await getProgresoDaily(uid, fechaStr);
@@ -297,27 +300,39 @@ export async function getProgresoSemanal(uid) {
 export async function getActividadesPorCategoriaSemana(uid) {
   try {
     const hoy = new Date();
-    const hace7Dias = new Date(hoy.getTime() - 7 * 24 * 60 * 60 * 1000);
-    const hace7DiasStr = hace7Dias.toISOString().split('T')[0];
+    // Obtener el lunes de esta semana
+    const diaSemana = hoy.getDay();
+    const diasHastaLunes = diaSemana === 0 ? 6 : diaSemana - 1;
+    const lunesEstaSemanaa = new Date(hoy.getTime() - diasHastaLunes * 24 * 60 * 60 * 1000);
+    const lunesStr = lunesEstaSemanaa.toISOString().split('T')[0];
     const hoyStr = hoy.toISOString().split('T')[0];
     
+    // Simplificar la consulta: solo por uid y completada
     const q = query(
-      collection(db, "actividades_usuario"),
+      collection(db, "actividades_usuarios"),
       where("uid", "==", uid),
-      where("fecha", ">=", hace7DiasStr),
-      where("fecha", "<=", hoyStr),
       where("completada", "==", true)
     );
     
     const snap = await getDocs(q);
-    const actividades = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const todasActividades = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    
+    // Filtrar por fecha en el cliente para evitar índices compuestos
+    const actividadesSemana = todasActividades.filter(actividad => {
+      const fechaActividad = actividad.fecha;
+      return fechaActividad >= lunesStr && fechaActividad <= hoyStr;
+    });
+    
+    console.log('📊 Actividades encontradas para esta semana:', actividadesSemana);
     
     // Agrupar por categoría
     const categoriasCount = {};
-    actividades.forEach(actividad => {
+    actividadesSemana.forEach(actividad => {
       const categoria = actividad.categoria || 'personal';
       categoriasCount[categoria] = (categoriasCount[categoria] || 0) + 1;
     });
+    
+    console.log('📈 Conteo por categorías:', categoriasCount);
     
     return { success: true, data: categoriasCount };
   } catch (error) {
@@ -329,13 +344,13 @@ export async function getActividadesPorCategoriaSemana(uid) {
 export async function getMetasDiariasCumplidas(uid) {
   try {
     const hoy = new Date();
-    const hace30Dias = new Date(hoy.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const hace15Dias = new Date(hoy.getTime() - 14 * 24 * 60 * 60 * 1000);
     
     const metasDatos = [];
     
-    // Obtener datos de los últimos 30 días
-    for (let i = 0; i < 30; i++) {
-      const fecha = new Date(hace30Dias.getTime() + i * 24 * 60 * 60 * 1000);
+    // Obtener datos de los últimos 15 días
+    for (let i = 0; i < 15; i++) {
+      const fecha = new Date(hace15Dias.getTime() + i * 24 * 60 * 60 * 1000);
       const fechaStr = fecha.toISOString().split('T')[0];
       
       const result = await getProgresoDaily(uid, fechaStr);
@@ -345,9 +360,9 @@ export async function getMetasDiariasCumplidas(uid) {
         let totalMetas = 0;
         
         // Verificar metas principales
-        const metas = ['hidratacion', 'cardio', 'meditacion', 'descanso'];
+        const metas = ['hidratacion', 'cardio', 'meditacion', 'descanso', 'actividad_fisica', 'fuerza', 'respiracion'];
         metas.forEach(meta => {
-          if (progreso[meta]) {
+          if (progreso[meta] && progreso[meta].total > 0) {
             totalMetas++;
             if (progreso[meta].current >= progreso[meta].total) {
               metasCumplidas++;
@@ -355,14 +370,15 @@ export async function getMetasDiariasCumplidas(uid) {
           }
         });
         
-        const porcentaje = totalMetas > 0 ? (metasCumplidas / totalMetas) * 100 : 0;
+        const porcentaje = totalMetas > 0 ? Math.round((metasCumplidas / totalMetas) * 100) : 0;
         metasDatos.push({
           fecha: fechaStr,
-          porcentaje: Math.round(porcentaje),
+          porcentaje: porcentaje,
           metasCumplidas,
           totalMetas
         });
       } else {
+        // No hay datos para este día
         metasDatos.push({
           fecha: fechaStr,
           porcentaje: 0,
@@ -371,6 +387,8 @@ export async function getMetasDiariasCumplidas(uid) {
         });
       }
     }
+    
+    // console.log('📊 Metas diarias calculadas:', metasDatos);
     
     return { success: true, data: metasDatos };
   } catch (error) {
