@@ -13,14 +13,15 @@ export function ChatBot() {
         }
     ]);
     const [inputMessage, setInputMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const toggleChat = () => {
         setIsOpen(!isOpen);
     };
 
-    const handleSendMessage = (e) => {
+    const handleSendMessage = async (e) => {
         e.preventDefault();
-        if (inputMessage.trim() === '') return;
+        if (inputMessage.trim() === '' || isLoading) return;
 
         // Agregar mensaje del usuario
         const userMessage = {
@@ -31,38 +32,47 @@ export function ChatBot() {
         };
 
         setMessages(prev => [...prev, userMessage]);
+        setInputMessage('');
+        setIsLoading(true);
 
-        // Simular respuesta del bot (por ahora solo HTML básico)
-        setTimeout(() => {
+        try {
+            // Llamar a la API de Gemini
+            const response = await fetch('http://localhost:3001/gemini', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    message: `Eres un asistente de bienestar llamado GestHabit. Responde de forma amigable, breve y útil sobre temas de: hidratación, meditación, ejercicio y sueño. Pregunta del usuario: ${inputMessage}` 
+                }),
+            });
+
+            const data = await response.json();
+
+            // Agregar respuesta del bot
             const botResponse = {
                 id: Date.now() + 1,
-                text: getBotResponse(inputMessage),
+                text: data.text || "Lo siento, hubo un error al procesar tu mensaje.",
                 isBot: true,
                 timestamp: new Date()
             };
+
             setMessages(prev => [...prev, botResponse]);
-        }, 1000);
-
-        setInputMessage('');
-    };
-
-    const getBotResponse = (message) => {
-        const lowerMessage = message.toLowerCase();
-        
-        if (lowerMessage.includes('hidratacion') || lowerMessage.includes('agua')) {
-            return "💧 Excelente pregunta sobre hidratación. Te recomiendo beber al menos 2 litros de agua al día. ¿Has probado poner recordatorios en tu teléfono?";
+        } catch (error) {
+            console.error('Error al conectar con Gemini:', error);
+            
+            // Mensaje de error
+            const errorMessage = {
+                id: Date.now() + 1,
+                text: "❌ No pude conectarme al servidor. Por favor, verifica que el servidor esté corriendo en http://localhost:3001",
+                isBot: true,
+                timestamp: new Date()
+            };
+            
+            setMessages(prev => [...prev, errorMessage]);
+        } finally {
+            setIsLoading(false);
         }
-        if (lowerMessage.includes('meditacion') || lowerMessage.includes('relajacion')) {
-            return "🧘‍♀️ La meditación es muy beneficiosa. Te sugiero empezar con 5-10 minutos al día. ¿Te gustaría que te recomiende algunas técnicas básicas?";
-        }
-        if (lowerMessage.includes('ejercicio') || lowerMessage.includes('deporte')) {
-            return "🏃‍♂️ ¡Perfecto! El ejercicio es clave para el bienestar. Te recomiendo empezar con 30 minutos de actividad moderada al día. ¿Qué tipo de ejercicio prefieres?";
-        }
-        if (lowerMessage.includes('sueño') || lowerMessage.includes('dormir')) {
-            return "😴 El descanso es fundamental. Intenta mantener un horario regular de sueño y dormir 7-8 horas. ¿Tienes problemas para conciliar el sueño?";
-        }
-        
-        return "Gracias por tu mensaje. Estoy aquí para ayudarte con consejos sobre hidratación, meditación, ejercicio y descanso. ¿Sobre qué tema te gustaría conversar?";
     };
 
     const formatTime = (timestamp) => {
@@ -84,7 +94,9 @@ export function ChatBot() {
                             <img src={fotoBot} alt="Bot" className={styles.headerAvatar} />
                             <div>
                                 <h4>Asistente GestHabit</h4>
-                                <span>En línea</span>
+                                <span className={styles.statusIndicator}>
+                                    {isLoading ? '⏳ Escribiendo...' : '✅ En línea'}
+                                </span>
                             </div>
                         </div>
                         <button className={styles.closeButton} onClick={toggleChat}>
@@ -116,11 +128,16 @@ export function ChatBot() {
                             type="text"
                             value={inputMessage}
                             onChange={(e) => setInputMessage(e.target.value)}
-                            placeholder="Escribe tu mensaje..."
+                            placeholder={isLoading ? "Esperando respuesta..." : "Escribe tu mensaje..."}
                             className={styles.messageInput}
+                            disabled={isLoading}
                         />
-                        <button type="submit" className={styles.sendButton}>
-                            Enviar
+                        <button 
+                            type="submit" 
+                            className={styles.sendButton}
+                            disabled={isLoading}
+                        >
+                            {isLoading ? '⏳' : 'Enviar'}
                         </button>
                     </form>
                 </div>
