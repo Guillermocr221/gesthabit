@@ -100,6 +100,7 @@
     font-weight: bold;
 }
 
-.minutos {
+.cantidad {
+    font-size: 11px;
     color: #999;
 }

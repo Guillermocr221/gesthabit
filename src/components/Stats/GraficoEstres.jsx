@@ -1,10 +1,10 @@
 import styles from './GraficoEstres.module.css';
 
 export function GraficoEstres({ datos }) {
-    const { mesActual, mesPasado } = datos;
+    const { mesActual, fechas } = datos;
     
     // Configuración del gráfico
-    const maxValue = 10;
+    const maxValue = 100; // Cambiar a 100 para porcentajes
     const width = 100;
     const height = 60;
     const padding = 10;
@@ -29,13 +29,12 @@ export function GraficoEstres({ datos }) {
         return path;
     };
     
-    const puntosActual = crearPuntos(mesActual, '#45B7D1');
-    const puntosPasado = crearPuntos(mesPasado, '#FF6B6B');
+    const puntosActual = crearPuntos(mesActual, '#4CAF50');
     
     return (
         <div className={styles.graficoContainer}>
             <div className={styles.graficoHeader}>
-                <h4 className={styles.tituloGrafico}>Niveles de estrés</h4>
+                <h4 className={styles.tituloGrafico}>Porcentaje de metas cumplidas</h4>
             </div>
             
             <div className={styles.graficoContent}>
@@ -64,7 +63,7 @@ export function GraficoEstres({ datos }) {
                     {/* Números del eje Y */}
                     {[...Array(6)].map((_, i) => {
                         const y = padding + (i * (height - padding * 2) / 5);
-                        const valor = maxValue - (i * 2);
+                        const valor = maxValue - (i * 20); // De 100 a 0 de 20 en 20
                         return (
                             <text
                                 key={i}
@@ -74,91 +73,67 @@ export function GraficoEstres({ datos }) {
                                 fill="white"
                                 textAnchor="end"
                             >
-                                {valor}
+                                {valor}%
                             </text>
                         );
                     })}
                     
-                    {/* Números del eje X */}
-                    {[1, 3, 5, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30].map((dia, index) => {
-                        if (index % 2 === 0) { // Mostrar solo números pares para evitar saturación
-                            const x = (index / 29) * (width - padding * 2) + padding;
-                            return (
-                                <text
-                                    key={dia}
-                                    x={x}
-                                    y={height - 2}
-                                    fontSize="2.5"
-                                    fill="white"
-                                    textAnchor="middle"
-                                >
-                                    {dia}
-                                </text>
-                            );
-                        }
-                        return null;
-                    })}
+                    {/* Área de relleno bajo la línea */}
+                    <defs>
+                        <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stopColor="#4CAF50" stopOpacity="0.3"/>
+                            <stop offset="100%" stopColor="#4CAF50" stopOpacity="0.1"/>
+                        </linearGradient>
+                    </defs>
                     
-                    {/* Línea del mes pasado */}
+                    {/* Área rellena */}
                     <path
-                        d={crearPath(puntosPasado)}
-                        fill="none"
-                        stroke="#FF6B6B"
-                        strokeWidth="0.8"
-                        className={styles.lineaPasado}
+                        d={`${crearPath(puntosActual)} L ${width - padding} ${height - padding} L ${padding} ${height - padding} Z`}
+                        fill="url(#areaGradient)"
                     />
                     
-                    {/* Línea del mes actual */}
+                    {/* Línea principal */}
                     <path
                         d={crearPath(puntosActual)}
                         fill="none"
-                        stroke="#45B7D1"
-                        strokeWidth="0.8"
+                        stroke="#4CAF50"
+                        strokeWidth="1.2"
                         className={styles.lineaActual}
                     />
                     
-                    {/* Puntos del mes pasado */}
-                    {puntosPasado.map((punto, index) => (
-                        <circle
-                            key={`pasado-${index}`}
-                            cx={punto.x}
-                            cy={punto.y}
-                            r="0.8"
-                            fill="#FF6B6B"
-                        />
-                    ))}
-                    
-                    {/* Puntos del mes actual */}
+                    {/* Puntos en la línea */}
                     {puntosActual.map((punto, index) => (
                         <circle
                             key={`actual-${index}`}
                             cx={punto.x}
                             cy={punto.y}
                             r="0.8"
-                            fill="#45B7D1"
+                            fill="#4CAF50"
                         />
                     ))}
                     
                     {/* Punto destacado (día actual) */}
                     <circle
-                        cx={puntosActual[8]?.x || 0}
-                        cy={puntosActual[8]?.y || 0}
+                        cx={puntosActual[puntosActual.length - 1]?.x || 0}
+                        cy={puntosActual[puntosActual.length - 1]?.y || 0}
                         r="1.5"
                         fill="white"
-                        stroke="#45B7D1"
+                        stroke="#4CAF50"
                         strokeWidth="1"
                     />
                 </svg>
                 
-                {/* Leyenda */}
-                <div className={styles.leyenda}>
-                    <div className={styles.leyendaItem}>
-                        <div className={styles.lineaEjemplo} style={{ backgroundColor: '#45B7D1' }}></div>
-                        <span>Estrés Este Mes</span>
+                {/* Información adicional */}
+                <div className={styles.infoAdicional}>
+                    <div className={styles.estadistica}>
+                        <span className={styles.label}>Promedio:</span>
+                        <span className={styles.valor}>
+                            {Math.round(mesActual.reduce((sum, val) => sum + val, 0) / mesActual.length)}%
+                        </span>
                     </div>
-                    <div className={styles.leyendaItem}>
-                        <div className={styles.lineaEjemplo} style={{ backgroundColor: '#FF6B6B' }}></div>
-                        <span>Estrés Mes Pasado</span>
+                    <div className={styles.estadistica}>
+                        <span className={styles.label}>Mejor día:</span>
+                        <span className={styles.valor}>{Math.max(...mesActual)}%</span>
                     </div>
                 </div>
             </div>

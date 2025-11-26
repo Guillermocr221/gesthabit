@@ -1,116 +1,196 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './Activity.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { CalendarioActividad } from '../components/Actividad/CalendarioActividad';
-import { ActividadDiaria } from '../components/Actividad/ActividadDiaria';
+import { faArrowLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
 
-// Iconos para las actividades
-import waterIcon from '../assets/icons/water_drop.png';
-import neurologyIcon from '../assets/icons/neurology.png';
-import bedtimeIcon from '../assets/icons/bedtime.png';
-import vitalsignsIcon from '../assets/icons/vital_signs.png';
+import { ActividadDiaria } from '../components/Actividad/ActividadDiaria';
+import { CalendarioActividad } from '../components/Actividad/CalendarioActividad';
+import { ModalAgregarActividad } from '../components/Actividad/ModalAgregarActividad';
+
+import { auth } from '../firebase/firebaseConfig';
+import { getActividadesUsuario, createActividad, updateActividadCompletada, checkAndUpdateLogros } from '../firebase/habits';
+
+// import usenavigate
+import { useNavigate } from 'react-router-dom';
 
 export default function Activity() {
-    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [fechaSeleccionada, setFechaSeleccionada] = useState(new Date().toISOString().split('T')[0]);
+    const [actividades, setActividades] = useState([]);
+    const [showModal, setShowModal] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-    // Datos de ejemplo para las actividades del día
-    const actividadesDelDia = [
-        {
-            id: 1,
-            hora: "10:00",
-            periodo: "AM",
-            tipo: "CORRER",
-            cantidadHecha: 2.5,
-            meta: "Meta 2.5 km",
-            icono: vitalsignsIcon,
-            borderColor: "#FF6B6B",
-            completada: true
-        },
-        {
-            id: 2,
-            hora: "12:00",
-            periodo: "AM",
-            tipo: "YOGA",
-            cantidadHecha: 30,
-            meta: "Meta 30 min",
-            icono: neurologyIcon,
-            borderColor: "#4ECDC4",
-            completada: true
-        },
-        {
-            id: 3,
-            hora: "3:00",
-            periodo: "PM",
-            tipo: "GYM",
-            cantidadHecha: 1,
-            meta: "Meta 1 hora",
-            icono: vitalsignsIcon,
-            borderColor: "#45B7D1",
-            completada: true
-        },
-        {
-            id: 4,
-            hora: "5:00",
-            periodo: "PM",
-            tipo: "Tai Chi",
-            cantidadHecha: 30,
-            meta: "Meta 30 min",
-            icono: bedtimeIcon,
-            borderColor: "#96CEB4",
-            completada: true
-        },
-        {
-            id: 5,
-            hora: "9:00",
-            periodo: "PM",
-            tipo: "Guitarra",
-            cantidadHecha: 30,
-            meta: "Meta 30 min",
-            icono: neurologyIcon,
-            borderColor: "#FECA57",
-            completada: true
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        loadActividades();
+    }, [fechaSeleccionada]);
+
+    const loadActividades = async () => {
+        if (auth.currentUser) {
+            setLoading(true);
+            try {
+                const result = await getActividadesUsuario(auth.currentUser.uid, fechaSeleccionada);
+                if (result.success) {
+                    setActividades(result.data);
+                } else {
+                    console.error('Error loading actividades:', result.error);
+                    setActividades([]); // Mostrar lista vacía en caso de error
+                }
+            } catch (error) {
+                console.error('Unexpected error:', error);
+                setActividades([]);
+            } finally {
+                setLoading(false);
+            }
         }
-    ];
+    };
+
+    const handleFechaChange = (fecha) => {
+        setFechaSeleccionada(fecha);
+    };
+
+    const handleCompletarActividad = async (actividadId, completada) => {
+        try {
+            const result = await updateActividadCompletada(actividadId, completada);
+            if (result.success) {
+                await loadActividades(); // Recargar actividades
+                
+                // Verificar logros después de completar una actividad
+                if (completada && auth.currentUser) {
+                    try {
+                        const logrosResult = await checkAndUpdateLogros(auth.currentUser.uid);
+                        if (logrosResult.success && logrosResult.logrosDesbloqueados.length > 0) {
+                            // Mostrar notificación de nuevos logros
+                            logrosResult.logrosDesbloqueados.forEach(logro => {
+                                console.log(`¡Nuevo logro desbloqueado: ${logro.nombre}!`);
+                                // Aquí podrías mostrar una notificación toast
+                            });
+                        }
+                    } catch (error) {
+                        console.error('Error verificando logros:', error);
+                    }
+                }
+            } else {
+                alert('Error al actualizar la actividad. Intenta de nuevo.');
+            }
+        } catch (error) {
+            console.error('Error completando actividad:', error);
+            alert('Error al actualizar la actividad. Intenta de nuevo.');
+        }
+    };
+
+    const handleAgregarActividad = async (nuevaActividad) => {
+        
+        if (auth.currentUser) {
+            const actividadData = {
+                ...nuevaActividad,
+                fecha: fechaSeleccionada,
+                completada: false
+            };
+
+            try {
+                const result = await createActividad(auth.currentUser.uid, actividadData);
+                console.log('Resultado de createActividad:', result);
+                
+                if (result.success) {
+                    console.log('✅ Actividad creada exitosamente con ID:', result.id);
+                    setShowModal(false);
+                    await loadActividades(); // Recargar actividades
+                    
+                    // Verificar logros después de crear una actividad
+                    try {
+                        const logrosResult = await checkAndUpdateLogros(auth.currentUser.uid);
+                        if (logrosResult.success && logrosResult.logrosDesbloqueados.length > 0) {
+                            logrosResult.logrosDesbloqueados.forEach(logro => {
+                                console.log(`¡Nuevo logro desbloqueado: ${logro.nombre}!`);
+                            });
+                        }
+                    } catch (error) {
+                        console.error('Error verificando logros:', error);
+                    }
+                } else {
+                    console.error('Error en createActividad:', result.error);
+                    alert('Error al crear la actividad: ' + result.error);
+                }
+            } catch (error) {
+                console.error('Error inesperado creando actividad:', error);
+                alert('Error inesperado al crear la actividad. Revisa la consola.');
+            }
+        } else {
+            console.error('No hay usuario autenticado');
+            alert('No hay usuario autenticado');
+        }
+    };
 
     const handleVolver = () => {
-        // Aquí puedes agregar la lógica para volver al inicio
-        console.log("Volver al inicio");
+        
     };
+
+    const today = new Date().toISOString().split('T')[0];
+    const isToday = fechaSeleccionada === today;
+    const isFuture = fechaSeleccionada > today;
 
     return (
         <div className={styles.contenedorActivity}>
-            {/* Header con botón de volver */}
+            {/* Header */}
             <div className={styles.headerActivity}>
-                <button className={styles.botonVolver} onClick={handleVolver}>
-                    <FontAwesomeIcon icon={faArrowLeft} />
-                </button>
+                
                 <h2 className={styles.titulo}>Mis actividades</h2>
+                <button 
+                    className={styles.botonAgregar} 
+                    onClick={() => setShowModal(true)}
+                >
+                    <FontAwesomeIcon icon={faPlus} />
+                </button>
             </div>
 
             {/* Calendario */}
             <CalendarioActividad 
-                selectedDate={selectedDate}
-                onDateSelect={setSelectedDate}
+                fechaSeleccionada={fechaSeleccionada}
+                onFechaChange={handleFechaChange}
+                actividades={actividades}
             />
 
             {/* Actividades del día */}
-            <div className={styles.actividadSection}>
-                <h3 className={styles.subtitulo}>Actividad diaria</h3>
-                <div className={styles.verTodo}>
-                    <span>Ver todo</span>
-                </div>
+            <div className={styles.seccionActividades}>
+                <h3 className={styles.subtitulo}>
+                    {isToday ? 'Actividades de hoy' : 
+                     isFuture ? `Actividades programadas` : 
+                     'Actividades del día'}
+                </h3>
+
+                {loading ? (
+                    <div className={styles.loading}>Cargando actividades...</div>
+                ) : actividades.length > 0 ? (
+                    actividades.map((actividad) => (
+                        <ActividadDiaria
+                            key={actividad.id}
+                            actividad={actividad}
+                            onCompletar={handleCompletarActividad}
+                            isEditable={!isFuture} // Solo se puede completar si no es futuro
+                        />
+                    ))
+                ) : (
+                    <div className={styles.noActividades}>
+                        <p>No hay actividades programadas para este día</p>
+                        <button 
+                            className={styles.botonProgramar}
+                            onClick={() => setShowModal(true)}
+                        >
+                            Programar actividad
+                        </button>
+                    </div>
+                )}
             </div>
 
-            {/* Lista de actividades */}
-            <div className={styles.listaActividades}>
-                {actividadesDelDia.map(actividad => (
-                    <ActividadDiaria 
-                        key={actividad.id}
-                        {...actividad}
-                    />
-                ))}
-            </div>
+            {/* Modal para agregar actividad */}
+            {showModal && (
+                <ModalAgregarActividad
+                    fechaSeleccionada={fechaSeleccionada}
+                    onClose={() => setShowModal(false)}
+                    onAgregar={handleAgregarActividad}
+                />
+            )}
         </div>
     );
 }

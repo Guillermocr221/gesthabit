@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import styles from './Profile.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faCog } from '@fortawesome/free-solid-svg-icons';
@@ -6,52 +7,115 @@ import { PerfilDificultades } from '../components/Profile/PerfilDificultades';
 import { PerfilMetas } from '../components/Profile/PerfilMetas';
 import { useNavigate } from 'react-router-dom';
 
+import { logoutUser } from '../firebase/auth';
+import { auth } from '../firebase/firebaseConfig';
+import { getUser } from '../firebase/habits';
+
 export default function Profile() {
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
+    const [userData, setUserData] = useState(null);
 
-    const handleVolver = () => {
-        console.log("Volver al inicio");
+    useEffect(() => {
+        loadUserData();
+    }, []);
+
+    const loadUserData = async () => {
+        if (!auth.currentUser) {
+            navigate('/');
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const result = await getUser(auth.currentUser.uid);
+            if (result.success) {
+                setUserData(result.data);
+            } else {
+                console.error('Error loading user data:', result.error);
+                // Usar datos por defecto si hay error
+                setUserData({
+                    nombres: auth.currentUser.displayName?.split(' ')[0] || 'Usuario',
+                    apellidos: auth.currentUser.displayName?.split(' ').slice(1).join(' ') || '',
+                    email: auth.currentUser.email || '',
+                    telefono: '',
+                    genero: '',
+                    edad: '',
+                    dificultades: [],
+                    metas: []
+                });
+            }
+        } catch (error) {
+            console.error('Error loading user data:', error);
+        } finally {
+            setLoading(false);
+        }
     };
+
 
     const handleConfiguracion = () => {
         navigate('/edit-profile');
     };
 
-    const handleCerrarSesion = () => {
-        navigate('/');
+    const handleCerrarSesion = async () => {
+        try {
+            await logoutUser();
+            navigate('/');
+        } catch (error) {
+            console.error('Error al cerrar sesión:', error);
+        }
     };
 
-    // Datos del usuario
+    if (loading) {
+        return (
+            <div className={styles.contenedorProfile}>
+                <div className={styles.headerProfile}>
+                    <button className={styles.botonConfiguracion} onClick={handleConfiguracion}>
+                        <FontAwesomeIcon icon={faCog} />
+                    </button>
+                </div>
+                <div className={styles.loading}>Cargando perfil...</div>
+            </div>
+        );
+    }
+
+    if (!userData) {
+        return (
+            <div className={styles.contenedorProfile}>
+                <div className={styles.headerProfile}>
+                    <button className={styles.botonConfiguracion} onClick={handleConfiguracion}>
+                        <FontAwesomeIcon icon={faCog} />
+                    </button>
+                </div>
+                <div className={styles.error}>Error al cargar los datos del usuario</div>
+            </div>
+        );
+    }
+
+    // Formatear datos del usuario para los componentes
     const datosUsuario = {
-        nombre: "Diego Fernando Ramirez",
-        correo: "diego.fernando.ramire@gmail.com",
-        telefono: "962749778",
-        genero: "Masculino",
-        fotoPerfil: "/src/assets/image/default_user1.jpg"
+        nombre: userData.nombreCompleto || `${userData.nombres || ''} ${userData.apellidos || ''}`.trim(),
+        correo: userData.email || auth.currentUser?.email || '',
+        telefono: userData.telefono || 'No especificado',
+        genero: userData.genero || 'No especificado',
+        edad: userData.edad || 'No especificada',
+        fotoPerfil: userData.photoURL || auth.currentUser?.photoURL || "/src/assets/image/default_user1.jpg"
     };
 
     // Dificultades del usuario
-    const dificultades = [
-        "Se me olvida para descansar por exceso de tareas o desvelos antes de exámenes.",
-        "Tengo preocupación excesiva por notas, trabajos y exámenes.",
-        "Tengo miedo al fracaso o a no cumplir expectativas familiares y académicas."
-    ];
+    const dificultades = userData.dificultades && userData.dificultades.length > 0 
+        ? userData.dificultades 
+        : ["No has especificado dificultades aún."];
 
     // Metas del usuario
-    const metas = [
-        "Mejorar la calidad del sueño con rutinas de descanso saludable.",
-        "Manejar la ansiedad en épocas de exámenes mediante técnicas de relajación.",
-        "Reducir el cansancio mental organizando mejor el tiempo de estudio y descanso.",
-        "Adoptar hábitos de estudio saludables y sostenibles."
-    ];
+    const metas = userData.metas && userData.metas.length > 0 
+        ? userData.metas 
+        : ["No has especificado metas aún."];
 
     return (
         <div className={styles.contenedorProfile}>
             {/* Header con botones */}
             <div className={styles.headerProfile}>
-                <button className={styles.botonVolver} onClick={handleVolver}>
-                    <FontAwesomeIcon icon={faArrowLeft} />
-                </button>
                 <button className={styles.botonConfiguracion} onClick={handleConfiguracion}>
                     <FontAwesomeIcon icon={faCog} />
                 </button>
@@ -69,7 +133,7 @@ export default function Profile() {
             {/* Botón cerrar sesión */}
             <div className={styles.botonCerrarContainer}>
                 <button className={styles.botonCerrarSesion} onClick={handleCerrarSesion}>
-                    Cerrar cuenta
+                    Cerrar sesión
                 </button>
             </div>
         </div>

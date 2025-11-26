@@ -1,21 +1,25 @@
 import styles from './NavBarInicio.module.css'
 
-export function NavBarInicio() {
+export function NavBarInicio({ categoriaActiva, onCategoriaChange }) {
+  const categorias = [
+    { id: 'ejercicios', label: 'Ejercicios' },
+    { id: 'relajacion', label: 'Relajacion' },
+    { id: 'nutricion', label: 'Nutricion' },
+    { id: 'metas', label: 'Metas' }
+  ];
+
   return (
     <div className={styles.navbarInicio}>   
-        <div className={styles.botonNav}>
-            Ejercicios
-        </div>
-        <div className={styles.botonNav}>
-            Relajacion
-        </div>
-        <div className={styles.botonNav}>
-            Nutricion
-        </div>
-        <div className={styles.botonNav}>
-            Metas
-        </div>
+        {categorias.map((categoria) => (
+          <div 
+            key={categoria.id}
+            className={`${styles.botonNav} ${categoriaActiva === categoria.id ? styles.botonNavActivo : ''}`}
+            onClick={() => onCategoriaChange(categoria.id)}
+          >
+            {categoria.label}
+          </div>
+        ))}
     </div>
-    )
+  )
 }
 

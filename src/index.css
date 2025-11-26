@@ -32,7 +32,15 @@
   font-size: 16px;
 }
 
-body{
-  /* background-color: #E9FFED; */
+html, body {
+  height: 100%;
+  overflow-x: hidden;
+}
 
+body {
+  position: relative;
+}
+
+#root {
+  position: relative;
 }

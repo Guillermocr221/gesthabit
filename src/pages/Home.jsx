@@ -19,7 +19,7 @@ export function Home() {
             {currentView === 'achievements' && <Achievements />}
             {currentView === 'profile' && <Profile />}
 
-            <BottomNavbar onChange={setCurrentView} />
+            <BottomNavbar onChange={setCurrentView} currentView={currentView} />
         </div>
     )
 }

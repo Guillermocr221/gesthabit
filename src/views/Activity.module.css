@@ -1,65 +1,130 @@
 .contenedorActivity {
     padding: 20px;
-    margin-bottom: 60px;
-    background-color: #E9FFED;
+    background-color: #f8f9fa;
     min-height: 100vh;
+    padding-bottom: 100px; /* Espacio para bottom navbar */
 }
 
 .headerActivity {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 15px;
     margin-bottom: 20px;
+    background-color: white;
+    padding: 16px 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .botonVolver {
     background: none;
     border: none;
-    font-size: 20px;
-    color: #333;
+    font-size: 18px;
+    color: #666;
     cursor: pointer;
     padding: 8px;
     border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: background-color 0.2s ease;
 }
 
 .botonVolver:hover {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: #f5f5f5;
 }
 
 .titulo {
-    font-size: 24px;
-    font-weight: bold;
-    color: var(--titulo-color);
     margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
 }
 
-.actividadSection {
+.botonAgregar {
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin: 20px 0 15px 0;
+    justify-content: center;
+    cursor: pointer;
+    color: white;
+    font-size: 16px;
+    transition: background-color 0.2s ease;
+}
+
+.botonAgregar:hover {
+    background-color: #45a049;
+}
+
+.seccionActividades {
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 3rem;
 }
 
 .subtitulo {
+    margin: 0 0 16px 0;
     font-size: 18px;
-    font-weight: bold;
-    color: var(--titulo-color);
-    margin: 0;
+    font-weight: 600;
+    color: #333;
 }
 
-.verTodo {
-    color: var(--login-anchor-color);
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    font-style: italic;
+}
+
+.noActividades {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+}
+
+.noActividades p {
+    margin: 0 0 20px 0;
+    font-size: 16px;
+}
+
+.botonProgramar {
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    color: white;
     font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
-.verTodo:hover {
-    text-decoration: underline;
+.botonProgramar:hover {
+    background-color: #45a049;
 }
 
-.listaActividades {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+@media (max-width: 768px) {
+    .contenedorActivity {
+        padding: 10px;
+    }
+    
+    .headerActivity {
+        padding: 12px 16px;
+    }
+    
+    .titulo {
+        font-size: 18px;
+    }
+    
+    .seccionActividades {
+        padding: 16px;
+    }
 }

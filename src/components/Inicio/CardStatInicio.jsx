@@ -1,4 +1,9 @@
-import styles from './CardStatInicio.module.css'
+import { useState } from 'react';
+import styles from './CardStatInicio.module.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { auth } from '../../firebase/firebaseConfig';
+import { updateProgresoDaily } from '../../firebase/habits';
 
 export function CardStatInicio({ 
   icon, 
@@ -7,10 +12,63 @@ export function CardStatInicio({
   bgColor = "#eee", 
   progressCurrent = 0, 
   progressTotal = 1, 
-  unit = "" 
+  unit = "",
+  activityId,
+  onUpdate
 }) {
-  const percentage = Math.round((progressCurrent / progressTotal) * 100)
-  const remaining = progressTotal - progressCurrent
+  const [isLoading, setIsLoading] = useState(false);
+  const percentage = Math.round((progressCurrent / progressTotal) * 100);
+  const remaining = progressTotal - progressCurrent;
+
+  const handleAddProgress = async () => {
+    if (auth.currentUser && activityId && !isLoading) {
+      setIsLoading(true);
+      
+      try {
+        const today = new Date().toISOString().split('T')[0];
+        const increment = getIncrement(activityId);
+        const newCurrent = Math.min(progressCurrent + increment, progressTotal);
+        
+        // Actualizar en Firestore
+        const updateData = {
+          [activityId]: {
+            current: newCurrent,
+            total: progressTotal
+          }
+        };
+        
+        const result = await updateProgresoDaily(auth.currentUser.uid, today, updateData);
+        
+        if (result.success && onUpdate) {
+          onUpdate(); // Refrescar datos en el componente padre
+        }
+      } catch (error) {
+        console.error('Error updating progress:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
+
+  const getIncrement = (activityId) => {
+    const increments = {
+      // Nutrición
+      hidratacion: 0.25, // 250ml
+      descanso: 1,       // 1 hora
+      
+      // Relajación
+      meditacion: 5,     // 5 minutos
+      respiracion: 1,    // 1 sesión
+      
+      // Ejercicios
+      cardio: 5,         // 5 minutos
+      fuerza: 1,         // 1 serie
+      
+      // Metas
+      actividad_fisica: 1000, // 1000 pasos
+    };
+    return increments[activityId] || 1;
+  };
 
   return (
     <div className={styles.card}>
@@ -23,8 +81,12 @@ export function CardStatInicio({
           <p className={`font-size-16 font-weigth-bold ${styles.titleCardStat}`}>{title}</p>
           <p className={`font-size-14 ${styles.statCardStat}`}>{desc}</p>
         </div>
-        <div className={styles.add}>
-          <p className={`font-size-16 font-weigth-bold ${styles.addCardStat}`}>+</p>
+        <div className={`${styles.add} ${isLoading ? styles.loading : ''}`} onClick={handleAddProgress}>
+          {isLoading ? (
+            <FontAwesomeIcon icon={faSpinner} className={styles.spinner} />
+          ) : (
+            <FontAwesomeIcon icon={faPlus} className={styles.plusIcon} />
+          )}
         </div>
       </div>
 

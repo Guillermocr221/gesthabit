@@ -1,0 +1,201 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.modalContent {
+    background-color: white;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 20px 16px 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.modalHeader h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+.closeButton {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: #666;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.closeButton:hover {
+    background-color: #f5f5f5;
+}
+
+.fechaInfo {
+    padding: 16px 20px;
+    background-color: #f8f9fa;
+    margin: 0;
+}
+
+.fechaInfo p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.modalForm {
+    padding: 20px;
+}
+
+.inputGroup {
+    margin-bottom: 20px;
+}
+
+.inputGroup label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+}
+
+.inputGroup input,
+.inputGroup textarea,
+.inputGroup select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.2s ease;
+    box-sizing: border-box;
+}
+
+.inputGroup input:focus,
+.inputGroup textarea:focus,
+.inputGroup select:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+.inputGroup textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.inputRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.prioridadButtons {
+    display: flex;
+    gap: 8px;
+}
+
+.prioridadButton {
+    flex: 1;
+    padding: 8px 16px;
+    border: 2px solid;
+    border-radius: 20px;
+    background: transparent;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: all 0.2s ease;
+}
+
+.prioridadButton:hover {
+    opacity: 0.8;
+}
+
+.modalActions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.cancelButton {
+    flex: 1;
+    padding: 12px 24px;
+    background: transparent;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #666;
+    transition: all 0.2s ease;
+}
+
+.cancelButton:hover {
+    border-color: #ccc;
+    background-color: #f5f5f5;
+}
+
+.submitButton {
+    flex: 2;
+    padding: 12px 24px;
+    background-color: #4CAF50;
+    border: 2px solid #4CAF50;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: white;
+    transition: all 0.2s ease;
+}
+
+.submitButton:hover:not(:disabled) {
+    background-color: #45a049;
+    border-color: #45a049;
+}
+
+.submitButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+    .modalOverlay {
+        padding: 10px;
+    }
+    
+    .inputRow {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .prioridadButtons {
+        flex-direction: column;
+    }
+    
+    .modalActions {
+        flex-direction: column;
+    }
+}

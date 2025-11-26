@@ -62,3 +62,12 @@
     gap: 10px;
     cursor: pointer;
 }
+
+.googleLogo{
+    height: 24px;
+    width: 24px;
+}
+.logo{
+    height: 40px;
+    width: 40px;
+}

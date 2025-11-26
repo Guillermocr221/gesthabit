@@ -1,12 +1,12 @@
 
 import styles from './InputLogin.module.css'
 
-export function InputLogin( {type, id, name, placeholder, width100 = false} ) {
+export function InputLogin( {type, id, name, placeholder, width100 = false, onChange }) {
     let inputClass = '';
     if (width100 ) {
         inputClass = styles.width100;
     }
     return (
-        <input className={`${styles.input} ${inputClass}`} type={type} id={id} name={name} required placeholder={placeholder} />
+        <input className={`${styles.input} ${inputClass}`} type={type} id={id} name={name} required placeholder={placeholder} onChange={onChange} />
     )
 }

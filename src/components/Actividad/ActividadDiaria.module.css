@@ -17,6 +17,14 @@
     font-weight: bold;
     color: var(--titulo-color);
     line-height: 1;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #666;
+    background-color: #f1f3f4;
+    padding: 4px 8px;
+    border-radius: 12px;
 }
 
 .periodo {
@@ -35,6 +43,22 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background-color: white;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.actividadCard:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.actividadCard.completada {
+    background-color: #f8f9fa;
+    opacity: 0.8;
 }
 
 .actividadInfo {
@@ -88,4 +112,120 @@
     width: 24px;
     height: 24px;
     object-fit: contain;
+}
+
+.contenidoActividad {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.checkbox {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.checkbox.disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.checkboxEmpty {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    transition: border-color 0.2s ease;
+}
+
+.checkbox:hover .checkboxEmpty {
+    border-color: #4CAF50;
+}
+
+.completadaIcon {
+    color: #4CAF50;
+    font-size: 20px;
+}
+
+.spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #4CAF50;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.infoActividad {
+    flex: 1;
+}
+
+.tituloActividad {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+    color: #333;
+}
+
+.completada .tituloActividad {
+    text-decoration: line-through;
+    color: #888;
+}
+
+.descripcionActividad {
+    font-size: 14px;
+    color: #666;
+    margin: 0 0 8px 0;
+    line-height: 1.4;
+}
+
+.detallesActividad {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.prioridad {
+    font-size: 10px;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 8px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.categoria {
+    font-size: 11px;
+    color: #4CAF50;
+    background-color: rgba(76, 175, 80, 0.1);
+    padding: 2px 6px;
+    border-radius: 8px;
+    text-transform: capitalize;
+}
+
+.completadaBadge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 10px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }

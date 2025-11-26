@@ -5,6 +5,7 @@ import {ForgotPassword} from '../pages/ForgotPassword'
 import {Home} from '../pages/Home'
 import {Welcome} from '../pages/Welcome'
 import EditProfile from '../views/EditProfile'
+import { ProtectedRoute } from '../components/ProtectedRoute'
 
 export default function MyRoutes() {
 
@@ -12,11 +13,11 @@ export default function MyRoutes() {
         <Router>
             <Routes>
                 <Route exact path="/" element={<Login/>} />    
-                <Route path="/register" element={<Register/>} />  
+                <Route path="/register" element={ <Register/>} />  
                 <Route path="/forgot-password" element={<ForgotPassword/>} />
-                <Route path='/home' element={<Home />} />
+                <Route path='/home' element={ <ProtectedRoute> <Home /> </ProtectedRoute>} />
                 <Route path='/welcome' element={<Welcome />} />
-                <Route path='/edit-profile' element={<EditProfile />} />
+                <Route path='/edit-profile' element={ <ProtectedRoute> <EditProfile /> </ProtectedRoute>} />
             </Routes>
         </Router>
     )

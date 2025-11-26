@@ -3,21 +3,71 @@
     bottom: 0;
     left: 0;
     right: 0;
+    width: 100%;
     display: flex;
     justify-content: space-around;
-    padding: 0.5rem;
+    padding: 0.75rem 0.5rem;
     background: #fff;
     border-top: 1px solid #ccc;
-  }
-  
-  .navbar button {
+    z-index: 999;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.navButton {
     background: none;
     border: none;
-    font-size: 1.5rem;
     cursor: pointer;
-  }
-  
-  .navbar button:hover {
+    padding: 0.25rem;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    color: #666;
+    min-width: 50px;
+}
+
+.navButton:hover {
     color: #4caf50;
-  }
-  
+    transform: translateY(-1px);
+}
+
+.navButton.active {
+    color: #4caf50;
+}
+
+.navButton.active .icon {
+    transform: scale(1.1);
+}
+
+.icon {
+    font-size: 1.25rem;
+    transition: transform 0.2s ease;
+}
+
+.label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1;
+    margin: 0;
+}
+
+@media (max-width: 480px) {
+    .navbar {
+        padding: 0.5rem 0.25rem;
+    }
+    
+    .navButton {
+        min-width: 40px;
+        gap: 0.2rem;
+    }
+    
+    .icon {
+        font-size: 1.1rem;
+    }
+    
+    .label {
+        font-size: 0.7rem;
+    }
+}
