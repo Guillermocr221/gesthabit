@@ -23,7 +23,7 @@ export function ChatBot() {
         e.preventDefault();
         if (inputMessage.trim() === '' || isLoading) return;
 
-        // Agregar mensaje del usuario
+        // Mensaje del usuario
         const userMessage = {
             id: Date.now(),
             text: inputMessage,
@@ -36,8 +36,8 @@ export function ChatBot() {
         setIsLoading(true);
 
         try {
-            // Llamar a la API de Gemini
-            const response = await fetch('http://localhost:3001/gemini', {
+            // 👉 URL CORREGIDA
+            const response = await fetch('https://backend-f4ls.onrender.com/gemini', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -49,7 +49,7 @@ export function ChatBot() {
 
             const data = await response.json();
 
-            // Agregar respuesta del bot
+            // Mensaje del bot
             const botResponse = {
                 id: Date.now() + 1,
                 text: data.text || "Lo siento, hubo un error al procesar tu mensaje.",
@@ -60,15 +60,14 @@ export function ChatBot() {
             setMessages(prev => [...prev, botResponse]);
         } catch (error) {
             console.error('Error al conectar con Gemini:', error);
-            
-            // Mensaje de error
+
             const errorMessage = {
                 id: Date.now() + 1,
-                text: "❌ No pude conectarme al servidor. Por favor, verifica que el servidor esté corriendo en http://localhost:3001",
+                text: "❌ No pude conectarme al servidor de producción. Intenta nuevamente.",
                 isBot: true,
                 timestamp: new Date()
             };
-            
+
             setMessages(prev => [...prev, errorMessage]);
         } finally {
             setIsLoading(false);
@@ -81,12 +80,10 @@ export function ChatBot() {
 
     return (
         <div className={styles.chatBotContainer}>
-            {/* Botón flotante del ChatBot */}
             <div className={styles.chatBotButton} onClick={toggleChat}>
                 <img src={fotoBot} alt="ChatBot" className={styles.botAvatar} />
             </div>
 
-            {/* Ventana del chat */}
             {isOpen && (
                 <div className={styles.chatWindow}>
                     <div className={styles.chatHeader}>
